@@ -1,0 +1,30 @@
+# You can add the following files to Visual Studio source control:
+
+#	Solution files (*.sln).
+#	Project files, for example, *.csproj, *.vbproj, .*proj files.
+#	Application configuration files, based on XML, used to control run-time behavior of a Visual Studio project.
+
+# Files that you cannot add to source control include the following:
+#	Solution user option files (*.suo).
+#	Project user option files, for example, *.csproj.user, *.vbproj.user files.
+#	Web information files, for example, *.csproj.webinfo, *.vbproj.webinfo, that control the virtual root location of a Web project.
+#	.ncb (something to do with browsing or intellsense)
+#	Also, don't put in any object files, executables, auto-generated files (like headers that might be generated), Build output files, for example, *.dll and *.exe files.
+
+# As for executables and other generated files - there might be an exception if you want to be able to archive releases. That might be a good idea, but you'll probably want to manage that a little differently and possibly in a different place than your source code. If you do this, also archive your .pdb files so you can debug the stuff later. you might want to use a Symbol Server to store you archived symbols (see Debugging Tools for Windows for the symbol server and its documentation).
+
+syntax: glob
+
+*.suo
+*.user
+*.ncb
+Debug/*
+Release/*
+
+
+CV3DDriverConsole\Backup\CV3DDriverConsole.sln
+CV3DDriverConsole\CV3DDriverConsole.opensdf
+CV3DDriverConsole\CV3DDriverConsole.sdf
+CV3DDriverConsole\CV3DDriverConsole.vcxproj
+CV3DDriverConsole\CV3DDriverConsole.vcxproj.filters
+CV3DDriverConsole\UpgradeLog.htm
