@@ -14,13 +14,13 @@ bool Logger::HasMessages() {
 	return currentMessage != NULL;
 }
 
-char* Logger::GetLastMessage() {
-	char * mes = currentMessage;
+TCHAR* Logger::GetLastMessage() {
+	TCHAR * mes = currentMessage;
 	currentMessage = NULL;
 	return mes;
 }
 
-void Logger::PushMessage(char* message) {
+void Logger::PushMessage(TCHAR* message) {
 	//currentMessage = message;
 	printf(message);
 	printf("\n");

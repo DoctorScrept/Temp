@@ -1,6 +1,6 @@
 #include "LibraryLoader.h"
 
-HMODULE LibraryLoader::LoadDll(char* name) {
+HMODULE LibraryLoader::LoadDll(TCHAR* name) {
 	//strcpy
 	//hLibrary = LoadLibrary("E:\\Diplom\\driverProj\\core\\m1pusbapi.dll");
 	return LoadLibrary(name);
@@ -10,8 +10,8 @@ void LibraryLoader::FreeDll(HMODULE hlib) {
 	FreeLibrary(hlib);
 }
 
-char* LibraryLoader::GetMoudlePath(HMODULE hlib) {
-	char * path = new char[256];
+TCHAR* LibraryLoader::GetMoudlePath(HMODULE hlib) {
+	TCHAR * path = new TCHAR[256];
 	GetModuleFileName(hlib, path, 255);
 	return path;
 }

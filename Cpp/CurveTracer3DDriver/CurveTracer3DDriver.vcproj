@@ -2,9 +2,10 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="CT3DDriverConsole"
-	ProjectGUID="{70BBA2A0-7030-458E-82FB-6ACE90B9158E}"
-	RootNamespace="CV3DDriverConsole"
+	Name="CurveTracer3DDriver"
+	ProjectGUID="{E3386115-4431-4BEA-92AA-1782BF492F43}"
+	RootNamespace="CurveTracer3DDriver"
+	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -19,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="2"
 			>
 			<Tool
@@ -39,11 +40,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				UseUnicodeResponseFiles="true"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\CurveTracer3DDriver"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CURVETRACER3DDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -58,7 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -87,8 +93,8 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="2"
+			ConfigurationType="2"
+			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -110,8 +116,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CURVETRACER3DDRIVER_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -126,7 +134,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -163,26 +173,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Main.cpp"
+				RelativePath=".\DriverLibraryMain.cpp"
 				>
 			</File>
 			<Filter
 				Name="core"
 				>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\DeviceRequest.cpp"
+					RelativePath=".\core\DeviceRequest.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\LibraryLoader.cpp"
+					RelativePath=".\core\LibraryLoader.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\Logger.cpp"
+					RelativePath=".\core\Logger.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\USBDevice.cpp"
+					RelativePath=".\core\USBDevice.cpp"
 					>
 				</File>
 			</Filter>
@@ -190,7 +200,7 @@
 				Name="step"
 				>
 				<File
-					RelativePath="..\CurveTracer3DDriver\step\StepUSBDevice.cpp"
+					RelativePath=".\step\StepUSBDevice.cpp"
 					>
 				</File>
 			</Filter>
@@ -201,7 +211,7 @@
 					Name="signal"
 					>
 					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\signal\SignalRequest.cpp"
+						RelativePath=".\tracer\signal\SignalRequest.cpp"
 						>
 					</File>
 				</Filter>
@@ -209,7 +219,7 @@
 					Name="measurer"
 					>
 					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\measurer\StartMeasure.cpp"
+						RelativePath=".\tracer\measurer\StartMeasure.cpp"
 						>
 					</File>
 				</Filter>
@@ -221,26 +231,30 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\CurveTracer3DDriver\DsProjectDefines.h"
+				RelativePath=".\DriverLibraryMain.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DsProjectDefines.h"
 				>
 			</File>
 			<Filter
 				Name="core"
 				>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\DeviceRequest.h"
+					RelativePath=".\core\DeviceRequest.h"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\LibraryLoader.h"
+					RelativePath=".\core\LibraryLoader.h"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\Logger.h"
+					RelativePath=".\core\Logger.h"
 					>
 				</File>
 				<File
-					RelativePath="..\CurveTracer3DDriver\core\USBDevice.h"
+					RelativePath=".\core\USBDevice.h"
 					>
 				</File>
 			</Filter>
@@ -248,7 +262,7 @@
 				Name="lib"
 				>
 				<File
-					RelativePath="..\CurveTracer3DDriver\lib\mpusbapi.h"
+					RelativePath=".\lib\mpusbapi.h"
 					>
 				</File>
 			</Filter>
@@ -256,7 +270,7 @@
 				Name="step"
 				>
 				<File
-					RelativePath="..\CurveTracer3DDriver\step\StepUSBDevice.h"
+					RelativePath=".\step\StepUSBDevice.h"
 					>
 				</File>
 			</Filter>
@@ -267,7 +281,7 @@
 					Name="signal"
 					>
 					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\signal\SignalRequest.h"
+						RelativePath=".\tracer\signal\SignalRequest.h"
 						>
 					</File>
 				</Filter>
@@ -275,7 +289,7 @@
 					Name="measurer"
 					>
 					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\measurer\StartMeasure.h"
+						RelativePath=".\tracer\measurer\StartMeasure.h"
 						>
 					</File>
 				</Filter>
@@ -287,7 +301,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath="..\CurveTracer3DDriver\lib\mpusbapi.dll"
+				RelativePath=".\lib\mpusbapi.dll"
 				>
 			</File>
 		</Filter>

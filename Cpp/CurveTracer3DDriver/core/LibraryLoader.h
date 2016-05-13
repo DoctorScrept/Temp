@@ -5,9 +5,9 @@
 
 class LibraryLoader {
 public:
-	static HMODULE LoadDll(char* name);
+	static HMODULE LoadDll(TCHAR* name);
 	static void FreeDll(HMODULE hlib);
-	static char* GetMoudlePath(HMODULE hlib);
+	static TCHAR* GetMoudlePath(HMODULE hlib);
 };
 
 #endif // LIBRARY_LOADER_H
