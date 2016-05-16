@@ -5,6 +5,9 @@ class StepUSBDevice : public USBDevice
 	PBYTE send_bufP;
 	PBYTE receive_buf;
 
+	int majorVersion;
+	int minorVersion;
+
 	//–азмер масива даных жд€ приема (часто используетс€=)
 	int RecvLength;
 
@@ -19,6 +22,11 @@ public:
 	void TurnLeft();
 	void TurnRight();
 	void Stop();
+
+	int GetMajorVersion();
+	int GetMinorVersion();
+
+	int IsVersionConfirmed();
 
 private:
 

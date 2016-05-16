@@ -13,6 +13,7 @@ void main()
 		_getch();
 		return;
 	}
+	printf("firmware v%d.%d", d.GetMajorVersion(), d.GetMinorVersion());
 
 	char command;
 	//*

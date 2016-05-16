@@ -11,10 +11,15 @@
 #define TURN_LEFT 0x01
 #define TURN_RIGHT 0x02
 
+
+
 StepUSBDevice::StepUSBDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
 {
 	send_bufP = new BYTE[10];
 	receive_buf = new BYTE[10];
+
+	majorVersion = 0;
+	minorVersion = 0;
 }
 
 StepUSBDevice::~StepUSBDevice()
@@ -46,15 +51,18 @@ int StepUSBDevice::Connect()
 		//это сообщение с номером версии?
 		if (receive_buf[0] == READ_VERSION)
 		{
-			//вывести версию
-			printf("firmware v%d.%d", receive_buf[1], receive_buf[2]);
+			majorVersion = receive_buf[1];
+			minorVersion = receive_buf[2];
+
+			////вывести версию
+			//printf("firmware v%d.%d", receive_buf[1], receive_buf[2]);
 
 			//если версия = 2.1
 			if ((receive_buf[1] == 2) && (receive_buf[2] == 1))
 			{
-				ShowMessage("\nfirmware version confirmed\n");
+			//	ShowMessage("\nfirmware version confirmed\n");
 			}
-			else ShowMessage("\nfirmware version error\n");
+			//else ShowMessage("\nfirmware version error\n");
 		}
 	}
 
@@ -98,4 +106,16 @@ void StepUSBDevice::TurnRight() {
 
 void StepUSBDevice::Stop() {
 	SetDir(STOP);
+}
+
+int StepUSBDevice::IsVersionConfirmed() {
+	return (majorVersion == 2) && (minorVersion == 1);
+}
+
+int StepUSBDevice::GetMajorVersion() {
+	return majorVersion;
+}
+
+int StepUSBDevice::GetMinorVersion() {
+	return minorVersion;
 }
