@@ -195,6 +195,10 @@
 					RelativePath=".\core\USBDevice.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\core\USBDeviceError.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="step"
@@ -255,6 +259,10 @@
 				</File>
 				<File
 					RelativePath=".\core\USBDevice.h"
+					>
+				</File>
+				<File
+					RelativePath=".\core\USBDeviceError.h"
 					>
 				</File>
 			</Filter>

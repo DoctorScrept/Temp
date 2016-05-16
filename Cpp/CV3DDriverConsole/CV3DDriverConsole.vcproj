@@ -185,6 +185,10 @@
 					RelativePath="..\CurveTracer3DDriver\core\USBDevice.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\core\USBDeviceError.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="step"
@@ -241,6 +245,10 @@
 				</File>
 				<File
 					RelativePath="..\CurveTracer3DDriver\core\USBDevice.h"
+					>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\core\USBDeviceError.h"
 					>
 				</File>
 			</Filter>

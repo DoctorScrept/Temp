@@ -1,77 +1,89 @@
 #include "core/USBDevice.h" 
 #include "lib/mpusbapi.h"
 
-//error codes
-//lastError to all
-//check all loaded functions
-USBDevice::USBDevice(char* vidPid, char* inNAme, char* outName)
+//remove confirm
+USBDevice::USBDevice(char* vidPid, char* inName, char* outName)
 {
-	lastError = 0;
+	lastError = STATE_OK;
 	deviceVidPid = vidPid;
-	outPipeName = inNAme;
+	outPipeName = inName;
 	inPipeName = outName;
 	logger = new Logger();
+	isSessionOpen = false;
 }
 
 USBDevice::~USBDevice()
 {
+	CloseSession();
 	LibraryLoader::FreeDll(hLib);
 	delete logger;
 }
 
+FARPROC USBDevice::GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName)
+{
+	FARPROC result = GetProcAddress(hModule, lpProcName);
+	if (result == NULL) {
+		lastError = NO_FUNCTION;
+	}
+	return result;
+}
+
 int USBDevice::InitializeLibrary()
 {
+	if (lastError != STATE_OK) {
+		return lastError;
+	}
+
 	hLib = LibraryLoader::LoadDll("mpusbapi.dll");
 	logger->PushMessage(LibraryLoader::GetMoudlePath(hLib));
 
 	if (!hLib) {
 		logger->PushMessage("mpusbapi.dll not found");
-		return 1;
+		return lastError = NO_DLL;
 	}
 
-	Confirm(MPUSBGetDLLVersion = (DWORD(*)(void))GetProcAddress(hLib, "_MPUSBGetDLLVersion"));
-	
-
-
-	MPUSBGetDeviceCount = (DWORD(*)(PCHAR))GetProcAddress(hLib, "_MPUSBGetDeviceCount");
-	MPUSBOpen = (HANDLE(*)(DWORD, PCHAR, PCHAR, DWORD, DWORD))GetProcAddress(hLib, "_MPUSBOpen");
-	MPUSBWrite = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetProcAddress(hLib, "_MPUSBWrite");
-	MPUSBRead = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetProcAddress(hLib, "_MPUSBRead");
-	MPUSBReadInt = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetProcAddress(hLib, "_MPUSBReadInt");
-	MPUSBClose = (BOOL(*)(HANDLE))GetProcAddress(hLib, "_MPUSBClose");
+	MPUSBGetDLLVersion = (DWORD(*)(void))GetAndConfirmFuntion(hLib, "_MPUSBGetDLLVersion");
+	MPUSBGetDeviceCount = (DWORD(*)(PCHAR))GetAndConfirmFuntion(hLib, "_MPUSBGetDeviceCount");
+	MPUSBOpen = (HANDLE(*)(DWORD, PCHAR, PCHAR, DWORD, DWORD))GetAndConfirmFuntion(hLib, "_MPUSBOpen");
+	MPUSBWrite = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetAndConfirmFuntion(hLib, "_MPUSBWrite");
+	MPUSBRead = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetAndConfirmFuntion(hLib, "_MPUSBRead");
+	MPUSBReadInt = (DWORD(*)(HANDLE, PVOID, DWORD, PDWORD, DWORD))GetAndConfirmFuntion(hLib, "_MPUSBReadInt");
+	MPUSBClose = (BOOL(*)(HANDLE))GetAndConfirmFuntion(hLib, "_MPUSBClose");
 
 	return lastError;
 }
 
 int USBDevice::InitializeDevice()
 {
-	if (MPUSBGetDeviceCount == NULL) {
-		return 3;
+	if (lastError != STATE_OK) {
+		return lastError;
 	}
-	//получений количества устройств с заданым идентификатором, если такие есть то открыть соединения
+
+	//(DS) Get count of devices with specified vid and pid.
 	DWORD count = MPUSBGetDeviceCount(deviceVidPid);
 	
 	if (count <= 0) {
-		return 2;
+		return lastError = NO_DEVICE_CONNECTED;
 	}
-	return 0;
+	return STATE_OK;
 }
 
 int USBDevice::Connect()
 {
-	int initializeLibraryResult = InitializeLibrary();
-	if (initializeLibraryResult == 0) {
+	int result = InitializeLibrary();
+	if (result == STATE_OK) {
 		return InitializeDevice();
 	}
-	return initializeLibraryResult;
+	return result;
 }
 
 //отправка данных и иожидание подтверждения
 DWORD USBDevice::SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData, DWORD ExpectedReceiveLength, UINT SendDelay, UINT ReceiveDelay)
 {
-	if (lastError != 0) {
+	if (lastError != STATE_OK) {
 		return lastError;
 	}
+
 	//указатели для получения фактической длины (в байтах) преданых даных
 	PDWORD SentDataLength = new DWORD;
 	PDWORD ReceiveLength = new DWORD;
@@ -86,9 +98,13 @@ DWORD USBDevice::SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData
 			if(MPUSBRead(inPipe, ReceiveData, ExpectedReceiveLength, ReceiveLength, ReceiveDelay) != 0)
 			{
 				//если фактическмй размер принятых даных равен ожидаемому вернуть код ошибки 0 
-				if(*ReceiveLength == ExpectedReceiveLength) return 0;
+				if(*ReceiveLength == ExpectedReceiveLength) {
+					return STATE_OK;
+				}
 				//если фактическмй размер принятых даных меньше ожидаемого веруть 1
-				if(*ReceiveLength < ExpectedReceiveLength) return 1;
+				if(*ReceiveLength < ExpectedReceiveLength) {
+					return lastError = NOT_FULL_DATA;
+				}
 			}
 			//неудачный приеи, провереть код ошибки
 			else CheckInvalidHandle();
@@ -97,48 +113,66 @@ DWORD USBDevice::SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData
 		else CheckInvalidHandle();
 	}
 	//ошибка подключения
-	return 2;
+	return lastError;// = INVALID_PIPE_HANDLE;
 }
 
 void USBDevice::CheckInvalidHandle()
 {
 	if(GetLastError() == ERROR_INVALID_HANDLE) {
 		CloseSession();
+		lastError = INVALID_PIPE_HANDLE;
 	}
 	//вывести сообщене об ошибке
-	else logger->PushError(GetLastError());
+	else {
+		lastError = CALL_GET_LAST_ERROR;
+		logger->PushError(GetLastError());
+	}
 }
 
-int USBDevice::OpenSession() {
-	//открывает соединения не прием и передачу
+int USBDevice::OpenSession()
+{
+	if (IsSessionOpen()) {
+		return lastError = SESSION_ALREADY_OPEN;
+	}
+	//(DS) Opens connstions for send and receive
 	outPipe = MPUSBOpen(0, deviceVidPid, outPipeName, MP_WRITE, 0);
 	inPipe = MPUSBOpen(0, deviceVidPid, inPipeName, MP_READ, 0);
 	
-	if ((outPipe == INVALID_HANDLE_VALUE) || (inPipe == INVALID_HANDLE_VALUE)){
-		return 1;
+	if ((outPipe == INVALID_HANDLE_VALUE) || (inPipe == INVALID_HANDLE_VALUE)) {
+		return lastError = INVALID_PIPE_HANDLE;
 	}
-	return 0;
+	isSessionOpen = true;
+	return STATE_OK;
 }
 
-void USBDevice::CloseSession() {
-	//закрытие соединиений
-	MPUSBClose(outPipe);
-	MPUSBClose(inPipe);
-	inPipe = INVALID_HANDLE_VALUE;
-	outPipe = INVALID_HANDLE_VALUE;
+void USBDevice::CloseSession()
+{
+	if (IsSessionOpen()) {
+		//Close all connections
+		MPUSBClose(outPipe);
+		MPUSBClose(inPipe);
+		inPipe = INVALID_HANDLE_VALUE;
+		outPipe = INVALID_HANDLE_VALUE;
+		isSessionOpen = false;
+	}
 }
 
 int USBDevice::SendRequest(DeviceRequest* request)
 {
-	if (OpenSession() != 0) {
+	int result = OpenSession();
+	if (result != STATE_OK) {
 		logger->PushMessage("Status : USB Error()");
-		return 1;
+		return lastError = result;
 	}
 
 	//отправка комнады и прием ответа
-	int result = SendReceive(request->GetSendBuffer(), request->GetSendSize(), 
-							request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
+	result = SendReceive(request->GetSendBuffer(), request->GetSendSize(), 
+						request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
 
 	CloseSession();
 	return result;
+}
+
+int USBDevice::IsSessionOpen() {
+	return isSessionOpen;
 }

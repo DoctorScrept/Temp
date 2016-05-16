@@ -4,6 +4,7 @@
 #include "core/Logger.h"
 #include "core/LibraryLoader.h"
 #include "core/DeviceRequest.h"
+#include "core/USBDeviceError.h"
 
 #include <WinDef.h>
 
@@ -18,6 +19,7 @@ class USBDevice
 
 	HMODULE hLib;
 	int lastError;
+	bool isSessionOpen;
 protected:
 	Logger * logger;
 
@@ -29,9 +31,11 @@ private:
 	void CheckInvalidHandle();
 	void Confirm(void* pFunction) {
 		if (pFunction == NULL) {
-			lastError = 50;
+			lastError = NO_FUNCTION;
 		}
 	}
+
+	FARPROC GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName);
 
 protected:
 	int OpenSession();
@@ -39,6 +43,8 @@ protected:
 
 	int InitializeLibrary();
 	int InitializeDevice();
+
+	int IsSessionOpen();
 
 public:
 	virtual int Connect();
