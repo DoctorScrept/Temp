@@ -1,7 +1,7 @@
 #include "core/USBDevice.h" 
 #include "lib/mpusbapi.h"
 
-//remove confirm
+
 USBDevice::USBDevice(char* vidPid, char* inName, char* outName)
 {
 	lastError = STATE_OK;
@@ -38,7 +38,6 @@ int USBDevice::InitializeLibrary()
 	logger->PushMessage(LibraryLoader::GetMoudlePath(hLib));
 
 	if (!hLib) {
-		logger->PushMessage("mpusbapi.dll not found");
 		return lastError = NO_DLL;
 	}
 
@@ -125,7 +124,6 @@ void USBDevice::CheckInvalidHandle()
 	//вывести сообщене об ошибке
 	else {
 		lastError = CALL_GET_LAST_ERROR;
-		logger->PushError(GetLastError());
 	}
 }
 
@@ -147,7 +145,8 @@ int USBDevice::OpenSession()
 
 void USBDevice::CloseSession()
 {
-	if (IsSessionOpen()) {
+	if (IsSessionOpen())
+	{
 		//Close all connections
 		MPUSBClose(outPipe);
 		MPUSBClose(inPipe);
@@ -161,11 +160,9 @@ int USBDevice::SendRequest(DeviceRequest* request)
 {
 	int result = OpenSession();
 	if (result != STATE_OK) {
-		logger->PushMessage("Status : USB Error()");
-		return lastError = result;
+		return result;
 	}
 
-	//отправка комнады и прием ответа
 	result = SendReceive(request->GetSendBuffer(), request->GetSendSize(), 
 						request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
 
@@ -175,4 +172,8 @@ int USBDevice::SendRequest(DeviceRequest* request)
 
 int USBDevice::IsSessionOpen() {
 	return isSessionOpen;
+}
+
+int USBDevice::GetLastError() {
+	return lastError;
 }

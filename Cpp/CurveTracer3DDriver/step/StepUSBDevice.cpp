@@ -1,17 +1,13 @@
 #include "step/StepUSBDevice.h"
-#include <stdio.h> 
 
-#define ShowMessage(m) printf(m)
-
+//(DS) Commands
+#define READ_VERSION 0x00
 #define MOTOR_ON 0x01
 
-//Константы команд
-#define READ_VERSION 0x00
+//(DS) Direction
 #define	STOP 0x00
 #define TURN_LEFT 0x01
 #define TURN_RIGHT 0x02
-
-
 
 StepUSBDevice::StepUSBDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
 {
@@ -20,6 +16,7 @@ StepUSBDevice::StepUSBDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\
 
 	majorVersion = 0;
 	minorVersion = 0;
+	isReady = 0;
 }
 
 StepUSBDevice::~StepUSBDevice()
@@ -36,7 +33,6 @@ int StepUSBDevice::Connect()
 	}
 
 	if (OpenSession() != 0) {
-		logger->PushMessage("Status : USB Error()");
 		return 1;
 	}
 
@@ -54,27 +50,29 @@ int StepUSBDevice::Connect()
 			majorVersion = receive_buf[1];
 			minorVersion = receive_buf[2];
 
-			////вывести версию
 			//printf("firmware v%d.%d", receive_buf[1], receive_buf[2]);
 
 			//если версия = 2.1
 			if ((receive_buf[1] == 2) && (receive_buf[2] == 1))
 			{
-			//	ShowMessage("\nfirmware version confirmed\n");
+				isReady = 1;
+				//printf("\nfirmware version confirmed\n");
 			}
-			//else ShowMessage("\nfirmware version error\n");
+			//else printf("\nfirmware version error\n");
 		}
 	}
 
 	CloseSession();
-
-	return 0;
+	return STATE_OK;
 }
 
 void StepUSBDevice::SetDir(BYTE direction)
 {
+	if (!isReady) {
+		return;
+	}
+
 	if (OpenSession() != 0) {
-		logger->PushMessage("Status : USB Error()");
 		return;
 	}
 
@@ -89,8 +87,9 @@ void StepUSBDevice::SetDir(BYTE direction)
 	if (SendReceive(send_bufP, 3, receive_buf, RecvLength, 1000, 1000) == 0)
 	{
 		//"отчет о доставке"
-		if (receive_buf[0] != MOTOR_ON)
-			logger->PushMessage("Status : Communication Error!");
+		if (receive_buf[0] != MOTOR_ON) {
+			lastError = COMMUNICATION_ERROR;
+		}
 	}
 
 	CloseSession();
@@ -109,7 +108,7 @@ void StepUSBDevice::Stop() {
 }
 
 int StepUSBDevice::IsVersionConfirmed() {
-	return (majorVersion == 2) && (minorVersion == 1);
+	return isReady;
 }
 
 int StepUSBDevice::GetMajorVersion() {

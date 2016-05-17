@@ -1,9 +1,16 @@
 #include "LibraryLoader.h"
 
+
 HMODULE LibraryLoader::LoadDll(TCHAR* name) {
-	//strcpy
-	//hLibrary = LoadLibrary("E:\\Diplom\\driverProj\\core\\m1pusbapi.dll");
-	return LoadLibrary(name);
+	HMODULE result = LoadLibrary(name);
+	if (result == NULL) {
+		TCHAR path[] = "..\\..\\CurveTracer3DDriver\\lib";
+		TCHAR fullPath[100];
+		strcpy(fullPath, path);
+		strcpy(fullPath, name);
+		result = LoadLibrary(fullPath);
+	}
+	return result;
 }
 
 void LibraryLoader::FreeDll(HMODULE hlib) {

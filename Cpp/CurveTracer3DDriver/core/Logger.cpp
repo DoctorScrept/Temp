@@ -1,17 +1,21 @@
 #include "core/Logger.h"
 #include <stdio.h>
 
+//TODO remove printf
+Logger::Logger(USBDevice * device)
+{
+	this->device = device;
+	currentMessage = NULL;
+}
+
 Logger::Logger()
 {
+	device = NULL;
 	currentMessage = NULL;
 }
 
 Logger::~Logger()
 {
-}
-
-bool Logger::HasMessages() {
-	return currentMessage != NULL;
 }
 
 TCHAR* Logger::GetLastMessage() {
@@ -21,11 +25,37 @@ TCHAR* Logger::GetLastMessage() {
 }
 
 void Logger::PushMessage(TCHAR* message) {
-	//currentMessage = message;
 	printf(message);
 	printf("\n");
 }
 
-void Logger::PushError(int err) {
-	printf("Error Code: %d\n", err);
+TCHAR* Logger::GetLastErrorText()
+{
+	switch (device->GetLastError()) {
+	case STATE_OK:
+		return "";
+		break;
+	case NO_DLL:
+		return "mpusbapi.dll not found";
+		break;
+	case NO_FUNCTION:
+		return "";
+		break;
+	case NO_DEVICE_CONNECTED:
+		return "";
+		break;
+	case NOT_FULL_DATA:
+		return "";
+		break;
+	case INVALID_PIPE_HANDLE:
+		return "Status : USB Error()";
+		break;
+	case CALL_GET_LAST_ERROR:
+		return "";
+		break;
+	case SESSION_ALREADY_OPEN:
+		return "Status : USB Error()";
+		break;
+	}
+	return NULL;
 }

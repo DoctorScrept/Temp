@@ -10,6 +10,8 @@
 #define CALL_GET_LAST_ERROR 6
 #define SESSION_ALREADY_OPEN 7
 
+#define COMMUNICATION_ERROR 8
+
 class USBDeviceError
 {
 public:

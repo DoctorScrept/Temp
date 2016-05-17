@@ -7,6 +7,7 @@ class StepUSBDevice : public USBDevice
 
 	int majorVersion;
 	int minorVersion;
+	char isReady;
 
 	//–азмер масива даных жд€ приема (часто используетс€=)
 	int RecvLength;

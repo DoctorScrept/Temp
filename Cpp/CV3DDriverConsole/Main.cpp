@@ -1,9 +1,9 @@
 #include<conio.h>
 #include<stdio.h>
 //Prject properties -> Configurarion (...) -> C/C++ -> General -> Iclude path
-#include "core/USBDevice.h" 
+
 #include "step/StepUSBDevice.h" 
-#include "core/DeviceRequest.h" 
+#include "tracer/signal/SignalRequest.h"
 
 void main()
 {
@@ -33,7 +33,7 @@ void main()
 		
 		case '4':
 		{
-			DeviceRequest r;
+			SignalRequest r;
 			d.SendRequest(&r);
 			unsigned char * b = r.GetReceiveBuffer();
 			printf("firmware v%d.%d", b[1], b[2]);

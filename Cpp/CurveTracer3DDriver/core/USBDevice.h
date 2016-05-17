@@ -8,6 +8,8 @@
 
 #include <WinDef.h>
 
+class Logger;
+
 class USBDevice
 {
 	char * deviceVidPid;
@@ -18,23 +20,18 @@ class USBDevice
 	HANDLE inPipe;
 
 	HMODULE hLib;
-	int lastError;
+	
 	bool isSessionOpen;
 protected:
 	Logger * logger;
+	int lastError;
 
 public:
-	USBDevice(char* vidPid, char* inNAme, char* outName);
+	USBDevice(char* vidPid, char* inName, char* outName);
 	~USBDevice();
 
 private:
 	void CheckInvalidHandle();
-	void Confirm(void* pFunction) {
-		if (pFunction == NULL) {
-			lastError = NO_FUNCTION;
-		}
-	}
-
 	FARPROC GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName);
 
 protected:
@@ -52,6 +49,8 @@ public:
 	DWORD SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData, DWORD ExpectedReceiveLength, UINT SendDelay, UINT ReceiveDelay);
 
 	int SendRequest(DeviceRequest* request);
+
+	int GetLastError();
 };
 
 #endif // USB_DEVICE_H

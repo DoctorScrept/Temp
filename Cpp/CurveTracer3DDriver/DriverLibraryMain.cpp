@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-StepUSBDevice * stepUsbDevice;// = NULL;
+StepUSBDevice * stepUsbDevice;
 
 extern "C" __declspec(dllexport) int Start() {
 	return stepUsbDevice->Connect();
@@ -36,8 +36,6 @@ extern "C" __declspec(dllexport) int IsVersionConfirmed() {
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
-	//printf("DllMain\n");
-
 	switch (fdwReason){
 	case DLL_PROCESS_ATTACH:
 		printf("DLL_PROCESS_ATTACH\n");

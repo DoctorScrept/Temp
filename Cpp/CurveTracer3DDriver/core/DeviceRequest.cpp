@@ -3,16 +3,22 @@
 
 DeviceRequest::DeviceRequest()
 {
-	sendBuffer = new unsigned char[10];
-	receiveBuffer = new unsigned char[10];
-
-	sendBuffer[0] = 0x00;    // command
-	sendBuffer[1] = 2;               // Expected length of the result
+	sendBuffer = 0;
+	receiveBuffer = 0;
 }
-
 
 DeviceRequest::~DeviceRequest()
 {
 	delete[] sendBuffer;
 	delete[] receiveBuffer;
+}
+
+unsigned char * DeviceRequest::GetSendBuffer()
+{
+	return sendBuffer;
+}
+
+unsigned char * DeviceRequest::GetReceiveBuffer()
+{
+	return receiveBuffer;
 }
