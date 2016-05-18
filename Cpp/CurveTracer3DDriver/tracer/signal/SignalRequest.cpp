@@ -1,5 +1,6 @@
 #include "SignalRequest.h"
 
+
 SignalRequest::SignalRequest(void)
 {
 	sendBuffer = new unsigned char[10];

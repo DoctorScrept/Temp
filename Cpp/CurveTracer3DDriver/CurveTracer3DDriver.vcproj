@@ -195,10 +195,6 @@
 					RelativePath=".\core\USBDevice.cpp"
 					>
 				</File>
-				<File
-					RelativePath=".\core\USBDeviceError.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="step"
@@ -236,10 +232,6 @@
 			>
 			<File
 				RelativePath=".\DriverLibraryMain.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DsProjectDefines.h"
 				>
 			</File>
 			<Filter

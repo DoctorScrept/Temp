@@ -4,10 +4,10 @@
 HMODULE LibraryLoader::LoadDll(TCHAR* name) {
 	HMODULE result = LoadLibrary(name);
 	if (result == NULL) {
-		TCHAR path[] = "..\\..\\CurveTracer3DDriver\\lib";
+		TCHAR path[] = "..\\..\\CurveTracer3DDriver\\lib\\";
 		TCHAR fullPath[100];
 		strcpy(fullPath, path);
-		strcpy(fullPath, name);
+		strcat(fullPath, name);
 		result = LoadLibrary(fullPath);
 	}
 	return result;

@@ -1,4 +1,4 @@
-#include "core/Logger.h"
+#include "Logger.h"
 #include <stdio.h>
 
 //TODO remove printf

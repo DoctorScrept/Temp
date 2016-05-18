@@ -1,4 +1,4 @@
-#include "step/StepUSBDevice.h"
+#include "StepUSBDevice.h"
 
 //(DS) Commands
 #define READ_VERSION 0x00

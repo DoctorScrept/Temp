@@ -1,8 +1,8 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "core/USBDevice.h" 
-#include "DsProjectDefines.h"
+#include "core/USBDevice.h"
+#include <windows.h>
 
 class USBDevice;
 

@@ -1,5 +1,5 @@
-#ifndef USB_DEVICE_ERROR
-#define USB_DEVICE_ERROR
+#ifndef USB_DEVICE_ERROR_H
+#define USB_DEVICE_ERROR_H
 
 #define STATE_OK 0
 #define NO_DLL 1
@@ -9,14 +9,6 @@
 #define INVALID_PIPE_HANDLE 5
 #define CALL_GET_LAST_ERROR 6
 #define SESSION_ALREADY_OPEN 7
-
 #define COMMUNICATION_ERROR 8
 
-class USBDeviceError
-{
-public:
-	USBDeviceError(void);
-	~USBDeviceError(void);
-};
-
-#endif // USB_DEVICE_ERROR
+#endif // USB_DEVICE_ERROR_H

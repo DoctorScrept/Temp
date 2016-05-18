@@ -185,10 +185,6 @@
 					RelativePath="..\CurveTracer3DDriver\core\USBDevice.cpp"
 					>
 				</File>
-				<File
-					RelativePath="..\CurveTracer3DDriver\core\USBDeviceError.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="step"
@@ -224,10 +220,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\CurveTracer3DDriver\DsProjectDefines.h"
-				>
-			</File>
 			<Filter
 				Name="core"
 				>
