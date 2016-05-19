@@ -16,7 +16,7 @@ public class StepUSBDevice : USBDevice
 
 	void Awake()
 	{
-		TryLoadDll(@"E:\Diplom\TempDocs\Cpp\CurveTracer3DDriver\Debug\CurveTracer3DDriver.dll");
+		TryLoadDll("CurveTracer3DDriver.dll");
 		if (hLib == null) {
 			return;
 		}

@@ -12,10 +12,22 @@ public class USBDevice : MonoBehaviour {
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	protected delegate int VoidFuntion();
 
-	protected void TryLoadDll(string path)
+	protected string[] additionalPaths = {
+		@"..\Cpp\CurveTracer3DDriver\Debug\",
+		@"..\Cpp\CurveTracer3DDriver\Release\"
+	};
+
+	protected void TryLoadDll(string name)
 	{
-		hLib = NativeMethods.LoadLibrary(path);
+		hLib = NativeMethods.LoadLibrary(name);
 		if (hLib.Value == IntPtr.Zero) {
+			foreach (string additionalPath in additionalPaths) {
+				string fullPath = additionalPath + name;
+				hLib = NativeMethods.LoadLibrary(fullPath);
+				if (hLib.Value != IntPtr.Zero) {
+					return;
+				}
+			}
 			hLib = null;
 		}
 	}
