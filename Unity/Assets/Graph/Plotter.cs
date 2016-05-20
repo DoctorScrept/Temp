@@ -7,7 +7,7 @@ public class Plotter : MonoBehaviour {
 	public MeshFilter f;
 
 	void Start () {
-		Surface s = new Surface();
+//		Surface s = new Surface();
 //		f.mesh = Generate(s.heightMap, s.GetLengthX(), s.GetLengthY(), s.GetMaxHeight());
 		f.mesh = GenerateMesh(new Surface());
 	}
@@ -20,13 +20,13 @@ public class Plotter : MonoBehaviour {
 	}
 
 	private Color GetColorByHeight(float height) {
-		return Color.Lerp(Color.red, Color.green, height);
+		return Color.Lerp(Color.blue, Color.red, height);
 	}
 	
 	public Mesh GenerateMesh(Surface surface)
 	{
 		int numVertexes = surface.GetLength();
-		int numTrianglesPoints = (surface.GetLengthX() - 1) * (surface.GetLengthY() - 1) * 6;
+		int numTrianglesPoints = (surface.GetLengthX() - 1) * (surface.GetLengthY() - 1) * 12;
 		int sizeX = surface.GetLengthX();
 		int sizeY = surface.GetLengthY();
 
@@ -47,6 +47,16 @@ public class Plotter : MonoBehaviour {
 			{
 				int firtsQuadId = y * sizeX + x;
 
+				// view from above surface
+				triangles[j++] = firtsQuadId + sizeX + 1;
+				triangles[j++] = firtsQuadId + sizeX;
+				triangles[j++] = firtsQuadId;
+				
+				triangles[j++] = firtsQuadId + 1;
+				triangles[j++] = firtsQuadId + sizeX + 1;
+				triangles[j++] = firtsQuadId;
+
+				// bottom view surface
 				triangles[j++] = firtsQuadId;
 				triangles[j++] = firtsQuadId + sizeX;
 				triangles[j++] = firtsQuadId + sizeX + 1;
