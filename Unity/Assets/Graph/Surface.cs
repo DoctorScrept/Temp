@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
-//using System.Collections;
 
 public class Surface
 {
 	public int x = 4;
 	public int y = 4;
 	
+//	public float[,] heightMap = { 	
+//		{1f, 0f, 0f, 0f},
+//		{0f, 2f, 0f, 0f},
+//		{0f, 0f, 0f, 0f},
+//		{0f, 0f, 0f, 0f}};
+
 	public float[,] heightMap = { 	
-		{1f, 0f, 0f, 0f},
-		{0f, 2f, 0f, 0f},
 		{0f, 0f, 0f, 0f},
-		{0f, 0f, 0f, 0f}};
+		{0f, 0f, 0f, 0f},
+		{0f, 0f, 2f, 0f},
+		{0f, 0f, 0f, 1f}};
+	
 	public Mesh mesh;
 	
-	private float maxHeight = 0;
+	private float maxHeight = 0f;
 	
 	public float GetHeight(int id) {
 		return heightMap[id / x, id % y];
@@ -25,17 +31,19 @@ public class Surface
 	public Vector3 GetPoint(int id) {
 		return new Vector3(id / x, id % y, heightMap[id / x, id % y]);
 	}
+
 	public Vector3 GetPoint(int x, int y) {
 		return new Vector3(x, y, heightMap [x, y]);
 	}
 	
-	
 	public int GetLengthX() {
 		return x;
 	}
+
 	public int GetLengthY() {
 		return y;
 	}
+
 	public int GetLength() {
 		return heightMap.Length;
 	}

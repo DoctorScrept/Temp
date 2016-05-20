@@ -8,8 +8,8 @@ public class Plotter : MonoBehaviour {
 
 	void Start () {
 		Surface s = new Surface();
-		f.mesh = Generate(s.heightMap, s.GetLengthX(), s.GetLengthY(), s.GetMaxHeight());
-//		f.mesh = GenerateMesh(new Surface());
+//		f.mesh = Generate(s.heightMap, s.GetLengthX(), s.GetLengthY(), s.GetMaxHeight());
+		f.mesh = GenerateMesh(new Surface());
 	}
 
 //	void Update () {}
