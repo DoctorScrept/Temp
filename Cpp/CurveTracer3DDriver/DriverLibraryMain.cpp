@@ -4,7 +4,16 @@
 #include <stdio.h>
 #include <windows.h>
 
+
+struct MUMBuffer
+{
+public:
+	float inData[16];
+};
+
 StepUSBDevice * stepUsbDevice;
+MUMBuffer * mumBuffer;
+
 
 extern "C" __declspec(dllexport) int Start() {
 	return stepUsbDevice->Connect();
@@ -33,6 +42,39 @@ extern "C" __declspec(dllexport) int GetMinorVersion() {
 extern "C" __declspec(dllexport) int IsVersionConfirmed() {
 	return stepUsbDevice->IsVersionConfirmed();
 }
+
+
+
+
+extern "C" __declspec(dllexport) bool IsReseived()
+{
+	return true;
+}
+
+
+int tempCounter;
+void s(float val) {
+	mumBuffer->inData[tempCounter] = val;
+	tempCounter++;
+}
+
+extern "C" __declspec(dllexport) int SetBuffer(MUMBuffer * buffer)
+{
+	mumBuffer = buffer;
+	tempCounter = 0;
+	s(1); s(1); s(0); s(0);
+	s(0); s(1); s(1); s(2);
+	s(0); s(1); s(0); s(2);
+	s(0); s(1); s(0); s(0);
+
+
+
+	return 19;
+}
+
+
+
+
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {

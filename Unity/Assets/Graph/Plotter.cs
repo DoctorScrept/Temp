@@ -16,7 +16,8 @@ public class Plotter : MonoBehaviour {
 
 	public void DrawToSlot(int slotId, Surface surface)
 	{
-		slots[slotId].mesh = GenerateMesh(surface);
+		//slots[slotId].mesh = GenerateMesh(surface);
+		f.mesh = GenerateMesh(surface);
 	}
 
 	private Color GetColorByHeight(float height) {

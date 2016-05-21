@@ -5,14 +5,20 @@ using System.Runtime.InteropServices;
 public class TracerDevice : USBDevice {
 	
 //	void Start () {}
-//	void Update () {}
+	public Plotter p;
 
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	protected delegate int SetBufferFunc([In, Out] IntPtr c);
 
+	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	protected delegate bool IsReseivedFunc();
+
 	SetBufferFunc setBuffer;
+	IsReseivedFunc isReseived;
 	MUMBuffer buffer;
 	IntPtr pBuffer;
+
+	bool isWaitingResults;
 
 	void Awake()
 	{
@@ -22,43 +28,53 @@ public class TracerDevice : USBDevice {
 		}
 
 		setBuffer = LoadFunction<SetBufferFunc>(hLib, "SetBuffer") as SetBufferFunc;
-
+		isReseived = LoadFunction<IsReseivedFunc>(hLib, "IsReseived") as IsReseivedFunc;
 		buffer = new MUMBuffer();
-		IntPtr _pStruct_buffer = Marshal.AllocCoTaskMem(Marshal.SizeOf(buffer));
-		Marshal.StructureToPtr(buffer, _pStruct_buffer, false);
-		pBuffer = _pStruct_buffer;
 
-
-		IntPtr ptr1 = Marshal.AllocCoTaskMem(Marshal.SizeOf(buffer));
-		Marshal.StructureToPtr(buffer, ptr1, false);
-		int retInt = setBuffer(ptr1); // вызов ветода
-		buffer = (MUMBuffer)Marshal.PtrToStructure(ptr1, typeof(MUMBuffer)); /// получаем наше значение 
-
-		Marshal.FreeCoTaskMem(_pStruct_buffer);
-		Marshal.FreeCoTaskMem(ptr1);
-		pBuffer = IntPtr.Zero;
-
-		Debug.Log(buffer.data[0]);
-		Debug.Log(retInt);
-
-//		start = LoadFunction<IntResultFunction>(hLib, "Start") as IntResultFunction;
-//		getMajorVersion = LoadFunction<IntResultFunction>(hLib, "GetMajorVersion") as IntResultFunction;
-//		getMinorVersion = LoadFunction<IntResultFunction>(hLib, "GetMinorVersion") as IntResultFunction;
-//		isVersionConfirmed = LoadFunction<IntResultFunction>(hLib, "IsVersionConfirmed") as IntResultFunction;
-//		left = LoadFunction<VoidFuntion>(hLib, "TurnLeft") as VoidFuntion;
-//		right = LoadFunction<VoidFuntion>(hLib, "TurnRight") as VoidFuntion;
-//		stop = LoadFunction<VoidFuntion>(hLib, "Stop") as VoidFuntion;
-		
 		if (hLib == null) {
 			// One or more functions not found
 		}
 	}
+
+	void Update () {
+		if (isWaitingResults) {
+//			f ();
+			if (isReseived ()) {
+				buffer.FromPtr(pBuffer);
+				isWaitingResults = false;
+
+				Surface s = new Surface(4, 4);
+				s.SetData(buffer.data);
+				p.DrawToSlot(0, s);
+
+			}
+		}
+	}
+
+	public void StatMeasure()
+	{
+		pBuffer = buffer.ToPtr();
+		int r = setBuffer(pBuffer);
+		isWaitingResults = true;
+	}
+
 }
 
 
 [StructLayout(LayoutKind.Sequential)]
 public struct MUMBuffer
 {
-	[MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
+	[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
 	public float[] data;
+
+	public IntPtr ToPtr() {
+		IntPtr _pStruct_buffer = Marshal.AllocCoTaskMem(Marshal.SizeOf(this));
+		Marshal.StructureToPtr(this, _pStruct_buffer, false);
+		return _pStruct_buffer;
+	}
+
+	public void FromPtr(IntPtr pBuffer) {
+		this = (MUMBuffer)Marshal.PtrToStructure(pBuffer, typeof(MUMBuffer));
+		Marshal.FreeCoTaskMem(pBuffer);
+	}
 }

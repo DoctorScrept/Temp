@@ -33,6 +33,18 @@ public class Surface
 //		y = yLength;
 	}
 
+	public void SetData(float[] data1)
+	{
+		heightMap = new float[x, y];
+		int n = 0;
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < y; j++) {
+				heightMap[i, j] = data1[n++];
+			}
+		}
+	}
+
+
 	public void SetXYScale(float scale) {
 		xyScale = scale;
 	}
