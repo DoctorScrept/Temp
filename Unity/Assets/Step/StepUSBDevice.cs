@@ -34,9 +34,9 @@ public class StepUSBDevice : USBDevice
 		}
 	}
 
-	void OnApplicationQuit() {
-		ClearDll();
-	}
+//	void OnApplicationQuit() {
+//		ClearDll();
+//	}
 
 	public void Connect()
 	{

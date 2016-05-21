@@ -31,7 +31,11 @@ public class USBDevice : MonoBehaviour {
 			hLib = null;
 		}
 	}
-	
+
+	protected virtual void OnApplicationQuit() {
+		ClearDll();
+	}
+
 	protected void ClearDll()
 	{
 		if (hLib == null) {
