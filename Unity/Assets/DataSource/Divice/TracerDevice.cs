@@ -38,7 +38,6 @@ public class TracerDevice : USBDevice {
 
 	void Update () {
 		if (isWaitingResults) {
-//			f ();
 			if (isReseived ()) {
 				buffer.FromPtr(pBuffer);
 				isWaitingResults = false;
@@ -54,7 +53,7 @@ public class TracerDevice : USBDevice {
 	public void StatMeasure()
 	{
 		pBuffer = buffer.ToPtr();
-		int r = setBuffer(pBuffer);
+		setBuffer(pBuffer);
 		isWaitingResults = true;
 	}
 

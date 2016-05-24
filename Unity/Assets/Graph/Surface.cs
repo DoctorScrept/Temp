@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+//use indexes
 public class Surface
 {
 	public int x = 4;
@@ -33,13 +34,13 @@ public class Surface
 //		y = yLength;
 	}
 
-	public void SetData(float[] data1)
+	public void SetData(float[] data)
 	{
 		heightMap = new float[x, y];
 		int n = 0;
 		for (int i = 0; i < x; i++) {
 			for (int j = 0; j < y; j++) {
-				heightMap[i, j] = data1[n++];
+				heightMap[i, j] = data[n++];
 			}
 		}
 	}
