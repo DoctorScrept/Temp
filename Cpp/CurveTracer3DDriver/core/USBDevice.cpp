@@ -10,6 +10,9 @@ USBDevice::USBDevice(char* vidPid, char* inName, char* outName)
 	inPipeName = outName;
 	logger = new Logger();
 	isSessionOpen = false;
+
+	InitializeCriticalSection(&recvStateCS);
+	currentRequest = NULL;
 }
 
 USBDevice::~USBDevice()
@@ -158,15 +161,21 @@ void USBDevice::CloseSession()
 
 int USBDevice::SendRequest(DeviceRequest* request)
 {
+	if (currentRequest != NULL) {
+		return lastError = ASYNC_SESSION_RUNNING;
+	}
+
 	int result = OpenSession();
 	if (result != STATE_OK) {
 		return result;
 	}
 
+	currentRequest = request;
 	result = SendReceive(request->GetSendBuffer(), request->GetSendSize(), 
 						request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
 
 	CloseSession();
+	currentRequest = NULL;
 	return result;
 }
 
@@ -176,4 +185,58 @@ int USBDevice::IsSessionOpen() {
 
 int USBDevice::GetLastError() {
 	return lastError;
+}
+
+void ReqestThread(void* pParams)
+{
+	USBDevice * device = (USBDevice*)pParams;
+	int result = device->OpenSession();
+	if (result != STATE_OK) {
+		return;
+	}
+
+	EnterCriticalSection(&device->recvStateCS);
+	DeviceRequest* request = device->currentRequest;
+	LeaveCriticalSection(&device->recvStateCS);
+
+	do {
+		if (request != NULL) {
+			result = device->SendReceive(request->GetSendBuffer(), request->GetSendSize(),
+				request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
+		} else {
+			break;
+		}
+	} while (request->OnResponse());
+
+	device->CloseSession();
+
+	device->FreeRequest();
+	
+	return;
+}
+
+int USBDevice::SendRequestAsync(DeviceRequest* request)
+{
+	if (currentRequest != NULL) {
+		return ASYNC_SESSION_RUNNING;
+	}
+	currentRequest = request;
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ReqestThread, this, 0, NULL);// &uThrID);
+	//currentRequest = NULL;
+	return STATE_OK;
+}
+
+int USBDevice::IsRequestEnd()
+{
+	EnterCriticalSection(&recvStateCS);
+	bool result = currentRequest == NULL;
+	LeaveCriticalSection(&recvStateCS);
+	return result;
+}
+
+void USBDevice::FreeRequest()
+{
+	EnterCriticalSection(&recvStateCS);
+	currentRequest = NULL;
+	LeaveCriticalSection(&recvStateCS);
 }

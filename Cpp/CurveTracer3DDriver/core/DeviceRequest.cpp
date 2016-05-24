@@ -22,3 +22,7 @@ unsigned char * DeviceRequest::GetReceiveBuffer()
 {
 	return receiveBuffer;
 }
+
+bool DeviceRequest::OnResponse() {
+	return false;
+}

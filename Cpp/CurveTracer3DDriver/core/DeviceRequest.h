@@ -16,6 +16,8 @@ public:
 
 	virtual unsigned char * GetSendBuffer();
 	virtual unsigned char * GetReceiveBuffer();
+
+	virtual bool OnResponse();
 };
 
 #endif // DEVICE_REQUEST_H

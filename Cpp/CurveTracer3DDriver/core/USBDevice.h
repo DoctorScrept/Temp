@@ -26,6 +26,10 @@ protected:
 	Logger * logger;
 	int lastError;
 
+	DeviceRequest * currentRequest;
+	CRITICAL_SECTION recvStateCS;
+	HANDLE hThread;
+
 public:
 	USBDevice(char* vidPid, char* inName, char* outName);
 	~USBDevice();
@@ -33,6 +37,7 @@ public:
 private:
 	void CheckInvalidHandle();
 	FARPROC GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName);
+	friend void ReqestThread(void* pParams);
 
 protected:
 	int OpenSession();
@@ -51,6 +56,11 @@ public:
 	int SendRequest(DeviceRequest* request);
 
 	int GetLastError();
+
+	int SendRequestAsync(DeviceRequest* request);
+	int IsRequestEnd();
+
+	void FreeRequest();
 };
 
 #endif // USB_DEVICE_H

@@ -39,6 +39,15 @@ void main()
 			printf("firmware v%d.%d", b[1], b[2]);
 		}
 			break;
+		case '5':
+			SignalRequest r;
+			d.SendRequestAsync(&r);
+			while (!d.IsRequestEnd()) {
+				printf("-");
+			}
+			unsigned char * b = r.GetReceiveBuffer();
+			printf("\nfirmware v%d.%d ASYNC", b[1], b[2]);
+			break;
 		}
 		command = _getch();
 	} while (command != '0');
