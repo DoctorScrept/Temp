@@ -220,11 +220,9 @@ int USBDevice::SendRequest(DeviceRequest* request)
 	return result;
 }
 
-
-
 void ReqestThread(void* pParams)
 {
-	USBDevice * device = (USBDevice*)pParams;
+	USBDevice * device = reinterpret_cast<USBDevice*>(pParams);
 	DeviceRequest* request = device->GetRequest();
 	int result;
 
@@ -238,7 +236,7 @@ void ReqestThread(void* pParams)
 		} else {
 			break;
 		}
-	} while (request->OnResponse());
+	} while (request->OnAsyncResponse());
 
 	device->CloseSession();
 	device->SetRequest(NULL);

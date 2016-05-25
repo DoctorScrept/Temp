@@ -1,8 +1,9 @@
 #include "StartMeasure.h"
 
 
-StartMeasure::StartMeasure(void)
+StartMeasure::StartMeasure(void) : DeviceRequest(10, 10)
 {
+	sendBuffer[0] = 0x02;
 }
 
 StartMeasure::~StartMeasure(void)
@@ -11,10 +12,10 @@ StartMeasure::~StartMeasure(void)
 
 int StartMeasure::GetExpectedSize()
 {
-	return 0;
+	return 8;
 }
 
 int StartMeasure::GetSendSize()
 {
-	return 0;
+	return 1;
 }

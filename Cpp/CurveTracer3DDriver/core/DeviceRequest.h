@@ -8,7 +8,7 @@ protected:
 	unsigned char * receiveBuffer;
 
 public:
-	DeviceRequest();
+	DeviceRequest(int sendSize, int recvSize);
 	~DeviceRequest();
 
 	virtual int GetExpectedSize() = 0;
@@ -17,7 +17,7 @@ public:
 	virtual unsigned char * GetSendBuffer();
 	virtual unsigned char * GetReceiveBuffer();
 
-	virtual bool OnResponse();
+	virtual bool OnAsyncResponse();
 };
 
 #endif // DEVICE_REQUEST_H

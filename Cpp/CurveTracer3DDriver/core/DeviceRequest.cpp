@@ -1,10 +1,20 @@
 #include "DeviceRequest.h"
 
 
-DeviceRequest::DeviceRequest()
+DeviceRequest::DeviceRequest(int sendSize, int recvSize)
 {
-	sendBuffer = 0;
-	receiveBuffer = 0;
+	if (sendSize > 0) {
+		sendBuffer = new unsigned char[sendSize];
+	} else {
+		sendBuffer = 0;
+	}
+
+	if (recvSize > 0) {
+		receiveBuffer = new unsigned char[recvSize];
+	}
+	else {
+		receiveBuffer = 0;
+	}
 }
 
 DeviceRequest::~DeviceRequest()
@@ -23,6 +33,6 @@ unsigned char * DeviceRequest::GetReceiveBuffer()
 	return receiveBuffer;
 }
 
-bool DeviceRequest::OnResponse() {
+bool DeviceRequest::OnAsyncResponse() {
 	return false;
 }

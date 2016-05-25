@@ -4,6 +4,12 @@
 
 #include "step/StepUSBDevice.h" 
 #include "tracer/signal/SignalRequest.h"
+#include "tracer/measurer/StartMeasure.h"
+
+void pr(unsigned char * b, int id) {
+	float f = ((float*)b)[id];
+	printf("\n%f", f);
+}
 
 void main()
 {
@@ -22,7 +28,7 @@ void main()
 	{
 		switch (command) {
 		case '1':
-			d.TurnLeft(); 
+			d.TurnLeft();
 			break;
 		case '2':
 			d.TurnRight();
@@ -30,15 +36,19 @@ void main()
 		case '3':
 			d.Stop();
 			break;
-		
+
 		case '4':
 		{
-			SignalRequest r;
+			StartMeasure r;
 			d.SendRequest(&r);
 			unsigned char * b = r.GetReceiveBuffer();
-			printf("firmware v%d.%d", b[1], b[2]);
+			pr(b, 0);
+			pr(b, 1);
+			/*float f = ((float*)b)[0];
+			printf("\n%f", f);*/
+			//printf("firmware v%d.%d", b[1], b[2]);
 		}
-			break;
+		break;
 		case '5':
 			SignalRequest r;
 			d.SendRequestAsync(&r);
