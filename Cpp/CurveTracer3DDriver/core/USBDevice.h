@@ -30,14 +30,18 @@ protected:
 	CRITICAL_SECTION recvStateCS;
 	HANDLE hThread;
 
+
+	CRITICAL_SECTION baseOperarionsCS;
+
 public:
 	USBDevice(char* vidPid, char* inName, char* outName);
 	~USBDevice();
 
 private:
-	void CheckInvalidHandle();
 	FARPROC GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName);
 	friend void ReqestThread(void* pParams);
+
+	int IsSessionOpen();
 
 protected:
 	int OpenSession();
@@ -46,7 +50,7 @@ protected:
 	int InitializeLibrary();
 	int InitializeDevice();
 
-	int IsSessionOpen();
+	void SetLastError(int error);
 
 public:
 	virtual int Connect();
@@ -60,7 +64,9 @@ public:
 	int SendRequestAsync(DeviceRequest* request);
 	int IsRequestEnd();
 
-	void FreeRequest();
+	bool SetRequestIfEmpty(DeviceRequest* request);
+	void SetRequest(DeviceRequest* request);
+	DeviceRequest* GetRequest();
 };
 
 #endif // USB_DEVICE_H
