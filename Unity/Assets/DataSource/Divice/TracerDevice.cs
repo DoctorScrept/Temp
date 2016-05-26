@@ -7,14 +7,12 @@ public class TracerDevice : USBDevice {
 //	void Start () {}
 	public Plotter p;
 
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	protected delegate int SetBufferFunc([In, Out] IntPtr c);
+//	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+//	protected delegate int SetBufferFunc([In, Out] IntPtr c);
 
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	protected delegate bool IsReseivedFunc();
+	MUMBuffer.SetBufferFunc setBuffer;
+	IntResultFunction getPercentComplete;
 
-	SetBufferFunc setBuffer;
-	IsReseivedFunc isReseived;
 	MUMBuffer buffer;
 	IntPtr pBuffer;
 
@@ -27,18 +25,21 @@ public class TracerDevice : USBDevice {
 			return;
 		}
 
-		setBuffer = LoadFunction<SetBufferFunc>(hLib, "SetBuffer") as SetBufferFunc;
-		isReseived = LoadFunction<IsReseivedFunc>(hLib, "IsReseived") as IsReseivedFunc;
+		setBuffer = LoadFunction<MUMBuffer.SetBufferFunc>(hLib, "SetBuffer") as MUMBuffer.SetBufferFunc;
+		getPercentComplete = LoadFunction<IntResultFunction>(hLib, "GetPercentComplete") as IntResultFunction;
 		buffer = new MUMBuffer();
 
 		if (hLib == null) {
+			Debug.LogError("FUckk");
 			// One or more functions not found
 		}
 	}
 
 	void Update () {
 		if (isWaitingResults) {
-			if (isReseived ()) {
+			int percentComplete = getPercentComplete();
+			Debug.Log(percentComplete);
+			if (percentComplete >= 100) {
 				buffer.FromPtr(pBuffer);
 				isWaitingResults = false;
 
@@ -65,6 +66,10 @@ public struct MUMBuffer
 {
 	[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
 	public float[] data;
+
+
+	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	public delegate int SetBufferFunc([In, Out] IntPtr buffer);
 
 	public IntPtr ToPtr() {
 		IntPtr _pStruct_buffer = Marshal.AllocCoTaskMem(Marshal.SizeOf(this));

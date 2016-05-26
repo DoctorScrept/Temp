@@ -5,7 +5,9 @@
 #include "step/StepUSBDevice.h" 
 #include "tracer/TracerDevice.h"
 
-
+//=============================================================================================================================
+// Common
+//=============================================================================================================================
 bool ConnectDevice(USBDevice * device) {
 	int result = device->Connect();
 		if (result != 0) {
@@ -16,6 +18,9 @@ bool ConnectDevice(USBDevice * device) {
 	return true;
 }
 
+//=============================================================================================================================
+// Step
+//=============================================================================================================================
 void TestStep()
 {
 	StepUSBDevice d;
@@ -60,12 +65,13 @@ void TestStep()
 }
 
 
-
+//=============================================================================================================================
+// Tracer
+//=============================================================================================================================
 void pr(unsigned char * b, int id) {
 	float f = ((float*)b)[id];
 	printf("\n%f", f);
 }
-
 
 void TestTracer()
 {
@@ -96,15 +102,54 @@ void TestTracer()
 		break;
 
 		case '5':
+			d.SendRequestAsync(d.measureRequest);
+			while (!d.IsRequestEnd()) {
+				printf("-");
+			}
+			unsigned char * b = d.measureRequest->GetReceiveBuffer();
+			pr(b, 0);
+			pr(b, 1);
 			break;
 		}
 		command = _getch();
 	} while (command != '0');
 }
 
+//=============================================================================================================================
+// DLL (Tracer)
+//=============================================================================================================================
+typedef void (*setBufFunc)(SurfaceBuffer*);
+typedef int(*intFunc)();
 
+void TestDll()
+{
+	HMODULE hLib = LoadLibrary("..\\CurveTracer3DDriver\\Debug\\CurveTracer3DDriver.dll");
+
+	if (!hLib) {
+		printf("NO dll");
+		_getch();
+		return;
+	}
+
+	setBufFunc setBuffer = (setBufFunc)GetProcAddress(hLib, "SetBuffer");
+	intFunc getPercentComplete = (intFunc)GetProcAddress(hLib, "GetPercentComplete");
+
+	char command = _getch();
+	setBuffer(new SurfaceBuffer());
+	do {
+		printf("%d", getPercentComplete());
+		command = _getch();
+	} while (command != '0');
+}
+
+
+
+//=============================================================================================================================
+// Main
+//=============================================================================================================================
 void main()
 {
-	TestTracer();
+	TestDll();
+	//TestTracer();
 	//TestStep();
 }

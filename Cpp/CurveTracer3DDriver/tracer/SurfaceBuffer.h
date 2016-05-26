@@ -4,6 +4,8 @@
 struct SurfaceBuffer
 {
 public:
+	float inData[16];
+
 	SurfaceBuffer();
 	~SurfaceBuffer();
 };
