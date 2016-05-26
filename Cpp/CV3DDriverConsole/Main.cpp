@@ -3,8 +3,8 @@
 //Prject properties -> Configurarion (...) -> C/C++ -> General -> Iclude path
 
 #include "step/StepUSBDevice.h" 
-#include "tracer/signal/SignalRequest.h"
-#include "tracer/measurer/StartMeasure.h"
+#include "tracer/SignalRequest.h"
+#include "tracer/MeasureRequest.h"
 
 void pr(unsigned char * b, int id) {
 	float f = ((float*)b)[id];
@@ -39,7 +39,7 @@ void main()
 
 		case '4':
 		{
-			StartMeasure r;
+			MeasureRequest r;
 			d.SendRequest(&r);
 			unsigned char * b = r.GetReceiveBuffer();
 			pr(b, 0);

@@ -9,7 +9,7 @@ protected:
 
 public:
 	DeviceRequest(int sendSize, int recvSize);
-	~DeviceRequest();
+	virtual ~DeviceRequest();
 
 	virtual int GetExpectedSize() = 0;
 	virtual int GetSendSize() = 0;

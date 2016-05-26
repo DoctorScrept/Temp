@@ -207,22 +207,26 @@
 			<Filter
 				Name="tracer"
 				>
-				<Filter
-					Name="signal"
+				<File
+					RelativePath=".\tracer\GetVersionRequest.cpp"
 					>
-					<File
-						RelativePath=".\tracer\signal\SignalRequest.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="measurer"
+				</File>
+				<File
+					RelativePath=".\tracer\MeasureRequest.cpp"
 					>
-					<File
-						RelativePath=".\tracer\measurer\StartMeasure.cpp"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath=".\tracer\SignalRequest.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\tracer\SurfaceBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\tracer\TracerDevice.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -277,22 +281,26 @@
 			<Filter
 				Name="tracer"
 				>
-				<Filter
-					Name="signal"
+				<File
+					RelativePath=".\tracer\GetVersionRequest.h"
 					>
-					<File
-						RelativePath=".\tracer\signal\SignalRequest.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="measurer"
+				</File>
+				<File
+					RelativePath=".\tracer\MeasureRequest.h"
 					>
-					<File
-						RelativePath=".\tracer\measurer\StartMeasure.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath=".\tracer\SignalRequest.h"
+					>
+				</File>
+				<File
+					RelativePath=".\tracer\SurfaceBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\tracer\TracerDevice.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

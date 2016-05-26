@@ -35,7 +35,7 @@ protected:
 
 public:
 	USBDevice(char* vidPid, char* inName, char* outName);
-	~USBDevice();
+	virtual ~USBDevice();
 
 private:
 	FARPROC GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName);

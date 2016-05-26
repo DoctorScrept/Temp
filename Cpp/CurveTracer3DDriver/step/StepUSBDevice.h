@@ -28,7 +28,4 @@ public:
 	int GetMinorVersion();
 
 	int IsVersionConfirmed();
-
-private:
-
 };

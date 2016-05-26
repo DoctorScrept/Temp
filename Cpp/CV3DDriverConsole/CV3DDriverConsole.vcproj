@@ -197,22 +197,26 @@
 			<Filter
 				Name="tracer"
 				>
-				<Filter
-					Name="signal"
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\GetVersionRequest.cpp"
 					>
-					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\signal\SignalRequest.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="measurer"
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\MeasureRequest.cpp"
 					>
-					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\measurer\StartMeasure.cpp"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\SignalRequest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\SurfaceBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\TracerDevice.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -263,22 +267,26 @@
 			<Filter
 				Name="tracer"
 				>
-				<Filter
-					Name="signal"
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\GetVersionRequest.h"
 					>
-					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\signal\SignalRequest.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="measurer"
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\MeasureRequest.h"
 					>
-					<File
-						RelativePath="..\CurveTracer3DDriver\tracer\measurer\StartMeasure.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\SignalRequest.h"
+					>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\SurfaceBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\CurveTracer3DDriver\tracer\TracerDevice.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
