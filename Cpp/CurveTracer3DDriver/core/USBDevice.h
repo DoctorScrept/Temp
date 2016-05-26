@@ -30,7 +30,6 @@ protected:
 	CRITICAL_SECTION recvStateCS;
 	HANDLE hThread;
 
-
 	CRITICAL_SECTION baseOperarionsCS;
 
 public:

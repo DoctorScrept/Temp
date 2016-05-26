@@ -3,6 +3,8 @@
 
 #include "core/DeviceRequest.h"
 
+#define MEASURE 0x02
+
 class MeasureRequest : public DeviceRequest
 {
 public:

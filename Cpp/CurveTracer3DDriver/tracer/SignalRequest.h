@@ -6,8 +6,8 @@
 class SignalRequest : public DeviceRequest
 {
 public:
-	SignalRequest(void);
-	~SignalRequest(void);
+	SignalRequest();
+	~SignalRequest();
 
 	virtual int GetExpectedSize();
 	virtual int GetSendSize();

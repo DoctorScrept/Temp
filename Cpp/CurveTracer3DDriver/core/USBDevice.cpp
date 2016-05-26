@@ -84,7 +84,6 @@ int USBDevice::Connect()
 	return result;
 }
 
-//отправка данных и иожидание подтверждения
 DWORD USBDevice::SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData, DWORD ExpectedReceiveLength, UINT SendDelay, UINT ReceiveDelay)
 {
 	EnterCriticalSection(&baseOperarionsCS);

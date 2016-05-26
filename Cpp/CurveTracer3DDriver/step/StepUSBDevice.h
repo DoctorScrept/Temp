@@ -1,18 +1,20 @@
 #include "core/USBDevice.h"
+#include "tracer/GetVersionRequest.h"
+
 
 class StepUSBDevice : public USBDevice
 {
 	PBYTE send_bufP;
 	PBYTE receive_buf;
-
-	int majorVersion;
-	int minorVersion;
 	char isReady;
 
 	//–азмер масива даных жд€ приема (часто используетс€=)
 	int RecvLength;
 
+
 public:
+	GetVersionRequest * getVersionRequest;
+
 	StepUSBDevice();
 	~StepUSBDevice();
 

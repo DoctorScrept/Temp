@@ -13,4 +13,6 @@
 #define ASYNC_SESSION_RUNNING 9
 #define NO_SESSION 10
 
+#define WRONG_VERSION 1001
+
 #endif // USB_DEVICE_ERROR_H

@@ -1,7 +1,7 @@
 #include "StepUSBDevice.h"
 
+
 //(DS) Commands
-#define READ_VERSION 0x00
 #define MOTOR_ON 0x01
 
 //(DS) Direction
@@ -13,16 +13,17 @@ StepUSBDevice::StepUSBDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\
 {
 	send_bufP = new BYTE[10];
 	receive_buf = new BYTE[10];
-
-	majorVersion = 0;
-	minorVersion = 0;
 	isReady = 0;
+
+	getVersionRequest = new GetVersionRequest();
 }
 
 StepUSBDevice::~StepUSBDevice()
 {
 	delete[] send_bufP;
 	delete[] receive_buf;
+
+	delete getVersionRequest;
 }
 
 int StepUSBDevice::Connect()
@@ -32,37 +33,23 @@ int StepUSBDevice::Connect()
 		return result;
 	}
 
-	if (OpenSession() != 0) {
-		return 1;
-	}
+	SendRequest(getVersionRequest);
 
-	//заполнение полей даных для запроса
-	send_bufP[0] = READ_VERSION;    // command
-	send_bufP[1] = 2;               // Expected length of the result
-	RecvLength = 4;
-
-	//отправка комнады и прием ответа
-	if (SendReceive(send_bufP, 2, receive_buf, RecvLength, 1000, 1000) == 0)
+	PBYTE recvBuffer = getVersionRequest->GetReceiveBuffer();
+	if (recvBuffer[0] == READ_VERSION)
 	{
-		//это сообщение с номером версии?
-		if (receive_buf[0] == READ_VERSION)
+		//printf("firmware v%d.%d", receive_buf[1], receive_buf[2]);
+		if (getVersionRequest->IsVersionMatch(2, 1))//v2.1
 		{
-			majorVersion = receive_buf[1];
-			minorVersion = receive_buf[2];
-
-			//printf("firmware v%d.%d", receive_buf[1], receive_buf[2]);
-
-			//если версия = 2.1
-			if ((receive_buf[1] == 2) && (receive_buf[2] == 1))
-			{
-				isReady = 1;
-				//printf("\nfirmware version confirmed\n");
-			}
-			//else printf("\nfirmware version error\n");
+			isReady = 1;
+			//printf("\nfirmware version confirmed\n");
+		} else {
+			USBDevice::SetLastError(WRONG_VERSION);
+			return WRONG_VERSION;
 		}
+		//else printf("\nfirmware version error\n");
 	}
 
-	CloseSession();
 	return STATE_OK;
 }
 
@@ -112,9 +99,9 @@ int StepUSBDevice::IsVersionConfirmed() {
 }
 
 int StepUSBDevice::GetMajorVersion() {
-	return majorVersion;
+	return getVersionRequest->GetMajorVersion();
 }
 
 int StepUSBDevice::GetMinorVersion() {
-	return minorVersion;
+	return getVersionRequest->GetMinorVersion();
 }

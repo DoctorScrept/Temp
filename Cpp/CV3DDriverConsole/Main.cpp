@@ -3,27 +3,28 @@
 //Prject properties -> Configurarion (...) -> C/C++ -> General -> Iclude path
 
 #include "step/StepUSBDevice.h" 
-#include "tracer/SignalRequest.h"
-#include "tracer/MeasureRequest.h"
+#include "tracer/TracerDevice.h"
 
-void pr(unsigned char * b, int id) {
-	float f = ((float*)b)[id];
-	printf("\n%f", f);
+
+bool ConnectDevice(USBDevice * device) {
+	int result = device->Connect();
+		if (result != 0) {
+		printf("error in Connect (%d)", result);
+		_getch();
+		return false;
+	}
+	return true;
 }
 
-void main()
+void TestStep()
 {
 	StepUSBDevice d;
-	if (d.Connect() != 0) {
-		printf("error in Connect");
-		_getch();
+	if (!ConnectDevice(&d)) {
 		return;
 	}
 	printf("firmware v%d.%d", d.GetMajorVersion(), d.GetMinorVersion());
 
-	char command;
-	//*
-	command = _getch();
+	char command = _getch();
 	do
 	{
 		switch (command) {
@@ -36,29 +37,74 @@ void main()
 		case '3':
 			d.Stop();
 			break;
-
 		case '4':
-		{
-			MeasureRequest r;
-			d.SendRequest(&r);
-			unsigned char * b = r.GetReceiveBuffer();
-			pr(b, 0);
-			pr(b, 1);
-			/*float f = ((float*)b)[0];
-			printf("\n%f", f);*/
-			//printf("firmware v%d.%d", b[1], b[2]);
-		}
-		break;
-		case '5':
-			SignalRequest r;
-			d.SendRequestAsync(&r);
-			while (!d.IsRequestEnd()) {
-				printf("-");
+			{
+				d.SendRequest(d.getVersionRequest);
+				unsigned char * b = d.getVersionRequest->GetReceiveBuffer();
+				printf("\nfirmware v%d.%d", b[1], b[2]);
 			}
-			unsigned char * b = r.GetReceiveBuffer();
-			printf("\nfirmware v%d.%d ASYNC", b[1], b[2]);
+			break;
+		case '5':
+			{
+				d.SendRequestAsync(d.getVersionRequest);
+				while (!d.IsRequestEnd()) {
+					printf("-");
+				}
+				unsigned char * b = d.getVersionRequest->GetReceiveBuffer();
+				printf("\nfirmware v%d.%d ASYNC", b[1], b[2]);
+			}
 			break;
 		}
 		command = _getch();
 	} while (command != '0');
+}
+
+
+
+void pr(unsigned char * b, int id) {
+	float f = ((float*)b)[id];
+	printf("\n%f", f);
+}
+
+
+void TestTracer()
+{
+	TracerDevice d;
+	if (!ConnectDevice(&d)) {
+		return;
+	}
+	printf("firmware v%d.%d", d.getVersionRequest->GetMajorVersion(), d.getVersionRequest->GetMinorVersion());
+
+	char command = _getch();
+	do
+	{
+		switch (command) {
+		case '1':
+			break;
+		case '2':
+			break;
+		case '3':
+			break;
+
+		case '4':
+		{
+			d.SendRequest(d.measureRequest);
+			unsigned char * b = d.measureRequest->GetReceiveBuffer();
+			pr(b, 0);
+			pr(b, 1);
+		}
+		break;
+
+		case '5':
+			break;
+		}
+		command = _getch();
+	} while (command != '0');
+}
+
+
+void main()
+{
+	TestTracer();
+	//TestStep();
 }
