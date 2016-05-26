@@ -68,6 +68,7 @@ int USBDevice::InitializeDevice()
 	if (count <= 0) {
 		return lastError = NO_DEVICE_CONNECTED;
 	}
+	lastError = STATE_OK;
 	return STATE_OK;
 }
 
@@ -76,11 +77,10 @@ int USBDevice::Connect()
 	EnterCriticalSection(&baseOperarionsCS);
 
 	int result = InitializeLibrary();
-	if (result == STATE_OK) {
+	if (result == NOT_INITIALIZED) {
 		result = InitializeDevice();
 	}
 
-	lastError = STATE_OK;
 	LeaveCriticalSection(&baseOperarionsCS);
 	return result;
 }
