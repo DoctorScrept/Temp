@@ -27,14 +27,13 @@ bool MeasureRequest::OnAsyncResponse() {
 	s(f[0]);
 	s(f[1]);
 
-	//tempCounter += 2;
-	return tempCounter < 16;
+	return tempCounter < BUFFER_DATA_SIZE;
 }
 
 int MeasureRequest::GetPercentComplete() {
-	if (tempCounter < 16) {
+	if (tempCounter < BUFFER_DATA_SIZE) {
 		float f = tempCounter;
-		f = f * 100 / 16;
+		f = f * 100 / BUFFER_DATA_SIZE;
 		return f;
 	}
 	return 100;

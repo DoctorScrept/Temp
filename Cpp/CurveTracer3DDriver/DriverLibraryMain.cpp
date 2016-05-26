@@ -71,7 +71,7 @@ extern "C" __declspec(dllexport) int GetPercentComplete() {
 extern "C" __declspec(dllexport) int SetBuffer(SurfaceBuffer * buffer)
 {
 	tracerDevice->measureRequest->SetBuffer(buffer);
-	tracerDevice->SendRequestAsync(tracerDevice->measureRequest);
+	int result = tracerDevice->SendRequestAsync(tracerDevice->measureRequest);
 
 	//tracerDevice->measureRequest->buffer = buffer;
 	//tempCounter = 0;
@@ -80,7 +80,7 @@ extern "C" __declspec(dllexport) int SetBuffer(SurfaceBuffer * buffer)
 	//s(0); s(1); s(0); s(2);
 	//s(0); s(1); s(0); s(0);
 
-	return 19;
+	return result;
 }
 
 

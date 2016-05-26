@@ -1,6 +1,7 @@
 #ifndef USB_DEVICE_ERROR_H
 #define USB_DEVICE_ERROR_H
 
+#define NOT_INITIALIZED -1
 #define STATE_OK 0
 #define NO_DLL 1
 #define NO_FUNCTION 2

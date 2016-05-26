@@ -54,8 +54,12 @@ public class TracerDevice : USBDevice {
 	public void StatMeasure()
 	{
 		pBuffer = buffer.ToPtr();
-		setBuffer(pBuffer);
-		isWaitingResults = true;
+		int res = setBuffer(pBuffer);
+		if (res != 0) {
+			Debug.LogError(res);
+		} else {
+			isWaitingResults = true;
+		}
 	}
 
 }

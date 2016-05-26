@@ -75,7 +75,7 @@ void StepUSBDevice::SetDir(BYTE direction)
 	{
 		//"отчет о доставке"
 		if (receive_buf[0] != MOTOR_ON) {
-			lastError = COMMUNICATION_ERROR;
+			USBDevice::SetLastError(COMMUNICATION_ERROR);
 		}
 	}
 

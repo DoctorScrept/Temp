@@ -4,7 +4,7 @@
 
 USBDevice::USBDevice(char* vidPid, char* inName, char* outName)
 {
-	lastError = STATE_OK;
+	lastError = NOT_INITIALIZED;
 	deviceVidPid = vidPid;
 	outPipeName = inName;
 	inPipeName = outName;
@@ -34,7 +34,7 @@ FARPROC USBDevice::GetAndConfirmFuntion(HMODULE hModule, LPCSTR lpProcName)
 
 int USBDevice::InitializeLibrary()
 {
-	if (lastError != STATE_OK) {
+	if (lastError != NOT_INITIALIZED) {
 		return lastError;
 	}
 
@@ -58,7 +58,7 @@ int USBDevice::InitializeLibrary()
 
 int USBDevice::InitializeDevice()
 {
-	if (lastError != STATE_OK) {
+	if (lastError != NOT_INITIALIZED) {
 		return lastError;
 	}
 
@@ -80,23 +80,28 @@ int USBDevice::Connect()
 		result = InitializeDevice();
 	}
 
+	lastError = STATE_OK;
 	LeaveCriticalSection(&baseOperarionsCS);
 	return result;
+}
+
+bool USBDevice::IsConected() {
+	return lastError != NOT_INITIALIZED;
 }
 
 DWORD USBDevice::SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData, DWORD ExpectedReceiveLength, UINT SendDelay, UINT ReceiveDelay)
 {
 	EnterCriticalSection(&baseOperarionsCS);
 
+	if (lastError != STATE_OK) {
+		LeaveCriticalSection(&baseOperarionsCS);
+		return lastError;
+	}
+
 	if (!IsSessionOpen()) {
 		lastError = NO_SESSION;
 		LeaveCriticalSection(&baseOperarionsCS);
 		return NO_SESSION;
-	}
-		
-	if (lastError != STATE_OK) {
-		LeaveCriticalSection(&baseOperarionsCS);
-		return lastError;
 	}
 
 	//указатели для получения фактической длины (в байтах) преданых даных
@@ -146,6 +151,11 @@ int USBDevice::OpenSession()
 	int result = STATE_OK;
 	EnterCriticalSection(&baseOperarionsCS);
 
+	if (lastError != STATE_OK) {
+		LeaveCriticalSection(&baseOperarionsCS);
+		return lastError;
+	}
+
 	if (!IsSessionOpen())
 	{
 		outPipe = MPUSBOpen(0, deviceVidPid, outPipeName, MP_WRITE, 0);
@@ -168,6 +178,12 @@ int USBDevice::OpenSession()
 void USBDevice::CloseSession()
 {
 	EnterCriticalSection(&baseOperarionsCS);
+
+	if (lastError != STATE_OK) {
+		LeaveCriticalSection(&baseOperarionsCS);
+		return;
+	}
+
 	if (IsSessionOpen())
 	{
 		//Close all connections
@@ -195,28 +211,14 @@ int USBDevice::GetLastError()
 void USBDevice::SetLastError(int error)
 {
 	EnterCriticalSection(&baseOperarionsCS);
-	lastError = error;
+	if (lastError != NOT_INITIALIZED) {
+		lastError = error;
+	}
 	LeaveCriticalSection(&baseOperarionsCS);
 }
 
-int USBDevice::SendRequest(DeviceRequest* request)
-{
-	if (!SetRequestIfEmpty(request)) {
-		SetLastError(ASYNC_SESSION_RUNNING);
-		return ASYNC_SESSION_RUNNING;
-	}
-
-	int result = OpenSession();
-	if (result != STATE_OK) {
-		return result;
-	}
-
-	result = SendReceive(request->GetSendBuffer(), request->GetSendSize(), 
-						request->GetReceiveBuffer(), request->GetExpectedSize(), 1000, 1000);
-
-	CloseSession();
-	SetRequest(NULL);
-	return result;
+int USBDevice::SendRequest(DeviceRequest* request) {
+	return SendRequest(request, false);
 }
 
 void ReqestThread(void* pParams)
@@ -241,7 +243,11 @@ void ReqestThread(void* pParams)
 	device->SetRequest(NULL);
 }
 
-int USBDevice::SendRequestAsync(DeviceRequest* request)
+int USBDevice::SendRequestAsync(DeviceRequest* request) {
+	return SendRequest(request, true);
+}
+
+int USBDevice::SendRequest(DeviceRequest* request, bool isAsync)
 {
 	if (!SetRequestIfEmpty(request)) {
 		SetLastError(ASYNC_SESSION_RUNNING);
@@ -253,7 +259,11 @@ int USBDevice::SendRequestAsync(DeviceRequest* request)
 		return result;
 	}
 
-	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ReqestThread, this, 0, NULL);// &uThrID);
+	if (isAsync) {
+		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ReqestThread, this, 0, NULL);// &uThrID);
+	} else {
+		ReqestThread(this);
+	}
 
 	return STATE_OK;
 }

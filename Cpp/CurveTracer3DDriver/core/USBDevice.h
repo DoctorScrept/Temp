@@ -22,8 +22,7 @@ class USBDevice
 	HMODULE hLib;
 	
 	bool isSessionOpen;
-protected:
-	Logger * logger;
+
 	int lastError;
 
 	DeviceRequest * currentRequest;
@@ -31,6 +30,9 @@ protected:
 	HANDLE hThread;
 
 	CRITICAL_SECTION baseOperarionsCS;
+protected:
+	Logger * logger;
+
 
 public:
 	USBDevice(char* vidPid, char* inName, char* outName);
@@ -56,9 +58,8 @@ public:
 
 	DWORD SendReceive(PBYTE SendData, DWORD SendLength, PBYTE ReceiveData, DWORD ExpectedReceiveLength, UINT SendDelay, UINT ReceiveDelay);
 
+	int SendRequest(DeviceRequest* request, bool isAsync);
 	int SendRequest(DeviceRequest* request);
-
-	int GetLastError();
 
 	int SendRequestAsync(DeviceRequest* request);
 	int IsRequestEnd();
@@ -66,6 +67,10 @@ public:
 	bool SetRequestIfEmpty(DeviceRequest* request);
 	void SetRequest(DeviceRequest* request);
 	DeviceRequest* GetRequest();
+
+	int GetLastError();
+
+	bool IsConected();
 };
 
 #endif // USB_DEVICE_H
