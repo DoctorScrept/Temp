@@ -218,6 +218,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="base"
+				>
+				<File
+					RelativePath="..\CurveTracer3DDriver\base\VersionedUSBDevice.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"
@@ -285,6 +293,14 @@
 				</File>
 				<File
 					RelativePath="..\CurveTracer3DDriver\tracer\TracerDevice.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="base"
+				>
+				<File
+					RelativePath="..\CurveTracer3DDriver\base\VersionedUSBDevice.h"
 					>
 				</File>
 			</Filter>
