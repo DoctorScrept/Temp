@@ -112,6 +112,7 @@ public class Plotter : MonoBehaviour
 	{
 		Mesh m = Generate(surface.AsTwoDimensional(), surface.GetLengthX(), surface.GetLengthY(), surface.GetMaxHeight());
 		surface.mesh = m;
+		return m;
 	}
 #endregion
 }
