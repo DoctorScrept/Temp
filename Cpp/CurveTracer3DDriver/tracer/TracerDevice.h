@@ -2,17 +2,16 @@
 #define TRACER_DEVICE_H
 
 #include "core/USBDevice.h"
-#include "tracer/GetVersionRequest.h"
+#include "base/VersionedUSBDevice.h"
 #include "tracer/SignalRequest.h"
 #include "tracer/MeasureRequest.h"
 
 #define MAJOR_VERSION 2
 #define MINOR_VERSION 1
 
-class TracerDevice : public USBDevice
+class TracerDevice : public VersionedUSBDevice
 {
 public:
-	GetVersionRequest * getVersionRequest;
 	SignalRequest* signalRequest;
 	MeasureRequest* measureRequest;
 
@@ -21,7 +20,7 @@ public:
 
 	int Connect();
 
-	int IsVersionConfirmed();
+	virtual int IsVersionConfirmed();
 };
 
 #endif // TRACER_DEVICE_H

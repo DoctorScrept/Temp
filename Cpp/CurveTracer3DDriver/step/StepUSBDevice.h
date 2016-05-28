@@ -1,8 +1,8 @@
 #include "core/USBDevice.h"
-#include "tracer/GetVersionRequest.h"
+#include "base/VersionedUSBDevice.h"
 
 
-class StepUSBDevice : public USBDevice
+class StepUSBDevice : public VersionedUSBDevice
 {
 	PBYTE send_bufP;
 	PBYTE receive_buf;
@@ -13,8 +13,6 @@ class StepUSBDevice : public USBDevice
 
 
 public:
-	GetVersionRequest * getVersionRequest;
-
 	StepUSBDevice();
 	~StepUSBDevice();
 
@@ -29,5 +27,5 @@ public:
 	int GetMajorVersion();
 	int GetMinorVersion();
 
-	int IsVersionConfirmed();
+	virtual int IsVersionConfirmed();
 };

@@ -9,31 +9,25 @@
 
 StepUSBDevice * stepUsbDevice = NULL;
 TracerDevice * tracerDevice = NULL;
-USBDevice * device = NULL;
-GetVersionRequest * getVersionRequest = NULL;
+VersionedUSBDevice * versionedUSBDevice = NULL;
 
 //=========================================================
 // Common
 //=========================================================
 extern "C" __declspec(dllexport) int GetMajorVersion() {
-	return getVersionRequest->GetMajorVersion();
+	return versionedUSBDevice->GetMajorVersion();
 }
 
 extern "C" __declspec(dllexport) int GetMinorVersion() {
-	return getVersionRequest->GetMinorVersion();
+	return versionedUSBDevice->GetMinorVersion();
 }
 
-extern "C" __declspec(dllexport) int IsVersionConfirmed()
-{
-#ifdef USE_TRACER
-	return tracerDevice->IsVersionConfirmed();
-#else
-	return stepUsbDevice->IsVersionConfirmed();
-#endif
+extern "C" __declspec(dllexport) int IsVersionConfirmed() {
+	return versionedUSBDevice->IsVersionConfirmed();
 }
 
 extern "C" __declspec(dllexport) int GetLastDeviceError() {
-	return device->GetLastError();
+	return versionedUSBDevice->GetLastError();
 }
 
 //=========================================================
@@ -62,23 +56,10 @@ extern "C" __declspec(dllexport) int GetPercentComplete() {
 	return tracerDevice->measureRequest->GetPercentComplete();
 }
 
-//int tempCounter;
-//void s(float val) {
-//	tracerDevice->measureRequest->buffer->inData[tempCounter] = val;
-//	tempCounter++;
-//}
-
 extern "C" __declspec(dllexport) int SetBuffer(SurfaceBuffer * buffer)
 {
 	tracerDevice->measureRequest->SetBuffer(buffer);
 	int result = tracerDevice->SendRequestAsync(tracerDevice->measureRequest);
-
-	//tracerDevice->measureRequest->buffer = buffer;
-	//tempCounter = 0;
-	//s(1); s(1); s(0); s(0);
-	//s(0); s(1); s(1); s(2);
-	//s(0); s(1); s(0); s(2);
-	//s(0); s(1); s(0); s(0);
 
 	return result;
 }
@@ -94,14 +75,11 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 
 #ifdef USE_TRACER
 		tracerDevice = new TracerDevice();
-		printf("%d", tracerDevice);
-		device = tracerDevice;
-		getVersionRequest = tracerDevice->getVersionRequest;
+		versionedUSBDevice = tracerDevice;
 		tracerDevice->Connect();
 #else
 		stepUsbDevice = new StepUSBDevice();
-		device = stepUsbDevice;
-		getVersionRequest = stepUsbDevice->getVersionRequest;
+		versionedUSBDevice = stepUsbDevice;
 #endif
 		break;
 	case DLL_THREAD_ATTACH:

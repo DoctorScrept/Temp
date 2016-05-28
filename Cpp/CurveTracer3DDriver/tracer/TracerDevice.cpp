@@ -1,15 +1,13 @@
 #include "TracerDevice.h"
 
-TracerDevice::TracerDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
+TracerDevice::TracerDevice() : VersionedUSBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
 {
-	getVersionRequest = new GetVersionRequest();
 	signalRequest = new SignalRequest();
 	measureRequest = new MeasureRequest();
 }
 
 TracerDevice::~TracerDevice()
 {
-	delete getVersionRequest;
 	delete signalRequest;
 	delete measureRequest;
 }

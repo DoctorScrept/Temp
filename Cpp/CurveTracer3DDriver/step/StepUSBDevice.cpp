@@ -9,21 +9,17 @@
 #define TURN_LEFT 0x01
 #define TURN_RIGHT 0x02
 
-StepUSBDevice::StepUSBDevice() : USBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
+StepUSBDevice::StepUSBDevice() : VersionedUSBDevice("vid_04d8&pid_000c", "\\MCHP_EP1", "\\MCHP_EP1")
 {
 	send_bufP = new BYTE[10];
 	receive_buf = new BYTE[10];
 	isReady = 0;
-
-	getVersionRequest = new GetVersionRequest();
 }
 
 StepUSBDevice::~StepUSBDevice()
 {
 	delete[] send_bufP;
 	delete[] receive_buf;
-
-	delete getVersionRequest;
 }
 
 int StepUSBDevice::Connect()
@@ -96,12 +92,4 @@ void StepUSBDevice::Stop() {
 
 int StepUSBDevice::IsVersionConfirmed() {
 	return isReady;
-}
-
-int StepUSBDevice::GetMajorVersion() {
-	return getVersionRequest->GetMajorVersion();
-}
-
-int StepUSBDevice::GetMinorVersion() {
-	return getVersionRequest->GetMinorVersion();
 }
