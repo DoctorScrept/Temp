@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-static class NativeMethods
+static class NativeLibraries
 {
 	[DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
 	public static extern IntPtr LoadLibrary(string dllToLoad);

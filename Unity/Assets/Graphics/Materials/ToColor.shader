@@ -1,9 +1,9 @@
-﻿ Shader "Custom/Vertex Colored" {
- Properties {
- }
-     SubShader {
-             Pass {
-                     ColorMaterial AmbientAndDiffuse
-             }
-     } 
- }
+﻿Shader "Custom/Vertex Colored" {
+Properties {
+}
+	SubShader {
+		Pass {
+			ColorMaterial AmbientAndDiffuse
+		}
+	} 
+}

@@ -12,6 +12,11 @@ public class USBDevice : MonoBehaviour {
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	protected delegate int VoidFuntion();
 
+	protected int lastError = 0;
+	protected string lastErrorText = null;
+
+	protected const string NO_DLL = "Library or functions not found";
+
 	protected string[] additionalPaths = {
 		@"..\Cpp\CurveTracer3DDriver\Debug\",
 		@"..\Cpp\CurveTracer3DDriver\Release\"
@@ -19,11 +24,11 @@ public class USBDevice : MonoBehaviour {
 
 	protected void TryLoadDll(string name)
 	{
-		hLib = NativeMethods.LoadLibrary(name);
+		hLib = NativeLibraries.LoadLibrary(name);
 		if (hLib.Value == IntPtr.Zero) {
 			foreach (string additionalPath in additionalPaths) {
 				string fullPath = additionalPath + name;
-				hLib = NativeMethods.LoadLibrary(fullPath);
+				hLib = NativeLibraries.LoadLibrary(fullPath);
 				if (hLib.Value != IntPtr.Zero) {
 					return;
 				}
@@ -41,7 +46,7 @@ public class USBDevice : MonoBehaviour {
 		if (hLib == null) {
 			return;
 		}
-		if (!NativeMethods.FreeLibrary(hLib.Value)) {
+		if (!NativeLibraries.FreeLibrary(hLib.Value)) {
 
 		}
 		hLib = null;
@@ -52,7 +57,7 @@ public class USBDevice : MonoBehaviour {
 		if (hModule == null) {
 			return null;
 		}
-		IntPtr pAddressOfFunctionToCall = NativeMethods.GetProcAddress(hModule.Value, name);
+		IntPtr pAddressOfFunctionToCall = NativeLibraries.GetProcAddress(hModule.Value, name);
 		if (pAddressOfFunctionToCall == IntPtr.Zero) {
 			ClearDll();
 			return null;
@@ -60,7 +65,21 @@ public class USBDevice : MonoBehaviour {
 		return Marshal.GetDelegateForFunctionPointer(pAddressOfFunctionToCall, typeof(T));
 	}
 
-	public bool IsReady() {
+	public bool IsInitialized() {
 		return hLib != null;
+	}
+
+	public string GetErrorText()
+	{
+		string result = null;
+		if (lastError != 0) {
+			result = lastError.ToString();
+			lastError = 0;
+		}
+		if (lastErrorText != null) {
+			result = lastErrorText;
+			lastErrorText = null;
+		}
+		return result;
 	}
 }

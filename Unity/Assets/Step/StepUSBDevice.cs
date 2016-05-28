@@ -5,14 +5,14 @@ public class StepUSBDevice : USBDevice
 {
 	public Text stateText;
 
-	IntResultFunction start;
-	IntResultFunction getMajorVersion;
-	IntResultFunction getMinorVersion;
-	IntResultFunction isVersionConfirmed;
+	private IntResultFunction start;
+	private IntResultFunction getMajorVersion;
+	private IntResultFunction getMinorVersion;
+	private IntResultFunction isVersionConfirmed;
 	
-	VoidFuntion left;
-	VoidFuntion right;
-	VoidFuntion stop;
+	private VoidFuntion left;
+	private VoidFuntion right;
+	private VoidFuntion stop;
 
 	void Awake()
 	{
@@ -30,13 +30,9 @@ public class StepUSBDevice : USBDevice
 		stop = LoadFunction<VoidFuntion>(hLib, "Stop") as VoidFuntion;
 
 		if (hLib == null) {
-			// One or more functions not found
+			stateText.text = NO_DLL;
 		}
 	}
-
-//	void OnApplicationQuit() {
-//		ClearDll();
-//	}
 
 	public void Connect()
 	{

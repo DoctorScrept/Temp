@@ -1,22 +1,20 @@
-﻿using UnityEngine;
-using System;//.Collections;
+﻿using System;
+using UnityEngine;
 using System.Runtime.InteropServices;
 
-public class TracerDevice : USBDevice {
-	
-//	void Start () {}
-	public Plotter p;
+public class TracerDevice : USBDevice
+{
+	public const int MIN_PERSENT = 0;
+	public const int MAX_PERSENT = 100;
+	public const int NO_DATA = -1;
 
-//	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-//	protected delegate int SetBufferFunc([In, Out] IntPtr c);
+	private int percentComplete = NO_DATA;
 
-	MUMBuffer.SetBufferFunc setBuffer;
-	IntResultFunction getPercentComplete;
+	private SurfaceBuffer.SetBufferFunc setBuffer;
+	private IntResultFunction getPercentComplete;
 
-	MUMBuffer buffer;
-	IntPtr pBuffer;
-
-	bool isWaitingResults;
+	private SurfaceBuffer buffer;
+	private IntPtr pBuffer;
 
 	void Awake()
 	{
@@ -25,64 +23,57 @@ public class TracerDevice : USBDevice {
 			return;
 		}
 
-		setBuffer = LoadFunction<MUMBuffer.SetBufferFunc>(hLib, "SetBuffer") as MUMBuffer.SetBufferFunc;
+		setBuffer = LoadFunction<SurfaceBuffer.SetBufferFunc>(hLib, "SetBuffer") as SurfaceBuffer.SetBufferFunc;
 		getPercentComplete = LoadFunction<IntResultFunction>(hLib, "GetPercentComplete") as IntResultFunction;
-		buffer = new MUMBuffer();
+		buffer = new SurfaceBuffer();
 
 		if (hLib == null) {
-			Debug.LogError("FUckk");
-			// One or more functions not found
+			lastErrorText = NO_DLL;
 		}
 	}
 
-	void Update () {
-		if (isWaitingResults) {
-			int percentComplete = getPercentComplete();
+	void Update ()
+	{
+		if (percentComplete >= MIN_PERSENT && percentComplete < MAX_PERSENT)
+		{
+			percentComplete = getPercentComplete();
 			Debug.Log(percentComplete);
-			if (percentComplete >= 100) {
+			if (percentComplete >= MAX_PERSENT) {
 				buffer.FromPtr(pBuffer);
-				isWaitingResults = false;
-
-				Surface s = new Surface(4, 4);
-				s.SetData(buffer.data);
-				p.DrawToSlot(0, s);
-
 			}
 		}
 	}
 
-	public void StatMeasure()
+	public bool StatMeasure()
 	{
-		pBuffer = buffer.ToPtr();
-		int res = setBuffer(pBuffer);
-		if (res != 0) {
-			Debug.LogError(res);
-		} else {
-			isWaitingResults = true;
+		if (!IsInitialized()) {
+			lastErrorText = NO_DLL;
+			return false;
 		}
+
+		pBuffer = buffer.ToPtr();
+		lastError = setBuffer(pBuffer);
+		if (lastError == 0) {
+			percentComplete = MIN_PERSENT;
+			return true;
+		}
+		return false;
 	}
 
-}
-
-
-[StructLayout(LayoutKind.Sequential)]
-public struct MUMBuffer
-{
-	[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-	public float[] data;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	public delegate int SetBufferFunc([In, Out] IntPtr buffer);
-
-	public IntPtr ToPtr() {
-		IntPtr _pStruct_buffer = Marshal.AllocCoTaskMem(Marshal.SizeOf(this));
-		Marshal.StructureToPtr(this, _pStruct_buffer, false);
-		return _pStruct_buffer;
+	public void StopMeasure() {
+		percentComplete = NO_DATA;
 	}
 
-	public void FromPtr(IntPtr pBuffer) {
-		this = (MUMBuffer)Marshal.PtrToStructure(pBuffer, typeof(MUMBuffer));
-		Marshal.FreeCoTaskMem(pBuffer);
+	public int GetPercentComplete() {
+		return percentComplete;
+	}
+
+	public float[] GetData()
+	{
+		if (percentComplete >= MAX_PERSENT) {
+			percentComplete = NO_DATA;
+			return buffer.data;
+		} 
+		return null;
 	}
 }
