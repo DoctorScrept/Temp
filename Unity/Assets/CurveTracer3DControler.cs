@@ -6,8 +6,16 @@ public class CurveTracer3DControler : MonoBehaviour
 	public TracerDevice device;
 	public Plotter plotter;
 
-	void Start () {
+	private float[,] defaultData = { 	
+		{0f, 0f, 0f, 0f},
+		{0f, 0f, 0f, 0f},
+		{0f, 0f, 2f, 0f},
+		{0f, 0f, 0f, 1f}};
 	
+	void Start () {
+		Surface s = new Surface(4, 4);
+		s.SetData(defaultData);
+		plotter.DrawToSlot(0, s);
 	}
 
 	void Update ()

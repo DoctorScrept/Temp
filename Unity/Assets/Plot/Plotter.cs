@@ -1,23 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class Plotter : MonoBehaviour {
-
+public class Plotter : MonoBehaviour
+{
 	public MeshFilter[] slots;
-	public MeshFilter f;
-
-	void Start () {
-//		Surface s = new Surface();
-//		f.mesh = Generate(s.heightMap, s.GetLengthX(), s.GetLengthY(), s.GetMaxHeight());
-		f.mesh = GenerateMesh(new Surface());
-	}
-
-//	void Update () {}
 
 	public void DrawToSlot(int slotId, Surface surface)
 	{
-		//slots[slotId].mesh = GenerateMesh(surface);
-		f.mesh = GenerateMesh(surface);
+		slots[slotId].mesh = GenerateMesh(surface);
+		//slots[slotId].mesh = GenerateMeshOld(surface);
 	}
 
 	private Color GetColorByHeight(float height) {
@@ -37,7 +27,7 @@ public class Plotter : MonoBehaviour {
 		for (int i = 0; i < numVertexes; i++)
 		{
 			vertices[i] = surface.GetPoint(i);
-			colors[i] = GetColorByHeight(surface.GetHeight(i) / surface.GetMaxHeight());
+			colors[i] = GetColorByHeight(surface[i] / surface.GetMaxHeight());
 		}
 
 		int j = 0;
@@ -75,8 +65,7 @@ public class Plotter : MonoBehaviour {
 		};
 	}
 	
-
-	// Old version, jast as example
+#region OLD_VERSION_AS_EXAMPLE
 	private Mesh Triangle(Vector3 vertex0, Vector3 vertex1, Vector3 vertex2, float max)
 	{
 		var normal = Vector3.Cross((vertex1 - vertex0), (vertex2 - vertex0)).normalized;
@@ -93,7 +82,6 @@ public class Plotter : MonoBehaviour {
 		return mesh;
 	}
 
-	// Old version, jast as example
 	public Mesh Generate(float[,] map, int sizeX, int sizeY, float max)
 	{
 		var combine = new CombineInstance[(sizeX - 1) * (sizeY -1) * 2];
@@ -119,6 +107,11 @@ public class Plotter : MonoBehaviour {
 		mesh.CombineMeshes(combine, true, false);
 		return mesh;
 	}
+
+	private Mesh GenerateMeshOld(Surface surface)
+	{
+		Mesh m = Generate(surface.AsTwoDimensional(), surface.GetLengthX(), surface.GetLengthY(), surface.GetMaxHeight());
+		surface.mesh = m;
+	}
+#endregion
 }
-
-

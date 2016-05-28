@@ -1,37 +1,22 @@
 ﻿using UnityEngine;
 
-//use indexes
 public class Surface
 {
-	public int x = 4;
-	public int y = 4;
+	private int x = 0;
+	private int y = 0;
+
+	private float[,] heightMap;
 
 	private float xyScale = 1f;
 	private float heightScale = 1f;
-
-	public Mesh mesh;
-	
 	private float maxHeight = 0f;
 
-//	public float[,] heightMap = { 	
-//		{1f, 0f, 0f, 0f},
-//		{0f, 2f, 0f, 0f},
-//		{0f, 0f, 0f, 0f},
-//		{0f, 0f, 0f, 0f}};
+	public Mesh mesh;
 
-	public float[,] heightMap = { 	
-		{0f, 0f, 0f, 0f},
-		{0f, 0f, 0f, 0f},
-		{0f, 0f, 2f, 0f},
-		{0f, 0f, 0f, 1f}};
-	
 	public Surface(int xLength, int yLength) {
 		x = xLength;
 		y = yLength;
-	}
-	public Surface() {
-//		x = xLength;
-//		y = yLength;
+		heightMap = new float[x, y];
 	}
 
 	public void SetData(float[] data)
@@ -43,9 +28,15 @@ public class Surface
 				heightMap[i, j] = data[n++];
 			}
 		}
+		maxHeight = 0f;
 	}
 
-
+	public void SetData(float[,] data)
+	{
+		heightMap = data;
+		maxHeight = 0f;
+	}
+	
 	public void SetXYScale(float scale) {
 		xyScale = scale;
 	}
@@ -62,12 +53,12 @@ public class Surface
 		return heightScale;
 	}
 
-	public float GetHeight(int id) {
-		return heightMap[id / x, id % y];
+	public float this[int id] {
+		get { return heightMap[id / x, id % y]; }
 	}
 
-	public float GetHeight(int x, int y) {
-		return heightMap[x, y];
+	public float this[int x, int y] {
+		get { return heightMap[x, y]; }
 	}
 	
 	public Vector3 GetPoint(int id) {
@@ -109,8 +100,12 @@ public class Surface
 					}
 				}
 			}
-			maxHeight = max - min;
+			maxHeight = (max - min) * heightScale;
 		}
 		return maxHeight;
+	}
+
+	public float[,] AsTwoDimensional() {
+		return heightMap;
 	}
 }
