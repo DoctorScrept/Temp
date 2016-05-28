@@ -1,4 +1,4 @@
-﻿Shader "Custom/Vertex Colored" {
+﻿Shader "(DS)/VertexColor" {
 Properties {
 }
 	SubShader {
