@@ -3,11 +3,20 @@
 public class Plotter : MonoBehaviour
 {
 	public MeshFilter[] slots;
+	private Surface[] surfaces = new Surface[1];
 
 	public void DrawToSlot(int slotId, Surface surface)
 	{
 		slots[slotId].mesh = GenerateMesh(surface);
 		//slots[slotId].mesh = GenerateMeshOld(surface);
+
+		surface.slot = slots[slotId].gameObject;
+		surfaces[slotId] = surface;
+
+		slots[slotId].mesh.name = "SomeMesh";
+		MeshCollider mc = slots[slotId].gameObject.GetComponent<MeshCollider>();
+		mc.sharedMesh = slots[slotId].mesh;
+
 	}
 
 	private Color GetColorByHeight(float height) {
@@ -63,6 +72,16 @@ public class Plotter : MonoBehaviour
 			colors = colors,
 			triangles = triangles
 		};
+	}
+
+	public Surface GetSurfaceBySlot(GameObject slot)
+	{
+		foreach (Surface s in surfaces) {
+			if (s.slot == slot) {
+				return s;
+			}
+		}
+		return null;
 	}
 	
 #region OLD_VERSION_AS_EXAMPLE

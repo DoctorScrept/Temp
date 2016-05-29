@@ -26,7 +26,7 @@ public class CurveTracer3DControler : MonoBehaviour
 	
 	void Start () {
 		Dialog.controler = this;
-
+		mainMenu.markerControler.plotter = plotter;
 
 		Surface s = new Surface(4, 4);
 		s.SetData(defaultData);
@@ -51,7 +51,7 @@ public class CurveTracer3DControler : MonoBehaviour
 			startMeasureButton.gameObject.SetActive(true);
 			completeText.gameObject.SetActive(false);
 			completeText.text = "0%";
-
+			CloseAll();
 		}
 	}
 
@@ -76,10 +76,8 @@ public class CurveTracer3DControler : MonoBehaviour
 			errorDialog.SetErrorText(errorText);
 		}
 	}
-
-
-	public void StopMeasure()
-	{
+	
+	public void StopMeasure() {
 		device.StopMeasure();
 	}
 	
@@ -116,4 +114,11 @@ public class CurveTracer3DControler : MonoBehaviour
 
 		return dialog;
 	}
+
+	public void CloseAll() {
+		while (dialogs.Count > 0) {
+			PopDialog();
+		}
+	}
+
 }

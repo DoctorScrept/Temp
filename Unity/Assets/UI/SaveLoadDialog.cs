@@ -8,9 +8,23 @@ public class SaveLoadDialog : Dialog {
 
 	public GameObject devicePage;
 	public GameObject filePage;
-	
+
+	public Text saveLoadFileButtonText;
+
 //	void Start () {}
 //	void Update () {}
+
+	public void SetState(bool isSave) {
+		if (isSave) {
+			saveLoadFileButtonText.text = "Save";
+			deviceTab.gameObject.SetActive(false);
+			GoFile();
+		} else {
+			saveLoadFileButtonText.text = "Load";
+			deviceTab.gameObject.SetActive(true);
+			GoDevice();
+		}
+	}
 
 	public void GoDevice() {
 		devicePage.SetActive(true);

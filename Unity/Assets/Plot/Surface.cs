@@ -12,6 +12,7 @@ public class Surface
 	private float maxHeight = 0f;
 
 	public Mesh mesh;
+	public GameObject slot;
 
 	public Surface(int xLength, int yLength) {
 		x = xLength;
