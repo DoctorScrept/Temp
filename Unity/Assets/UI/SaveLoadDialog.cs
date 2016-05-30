@@ -11,28 +11,40 @@ public class SaveLoadDialog : Dialog {
 
 	public Text saveLoadFileButtonText;
 
-//	void Start () {}
-//	void Update () {}
-
 	public void SetState(bool isSave) {
 		if (isSave) {
-			saveLoadFileButtonText.text = "Save";
+			saveLoadFileButtonText.text = "Зберегти";
 			deviceTab.gameObject.SetActive(false);
 			GoFile();
 		} else {
-			saveLoadFileButtonText.text = "Load";
+			saveLoadFileButtonText.text = "Відкрити";
 			deviceTab.gameObject.SetActive(true);
 			GoDevice();
 		}
 	}
 
-	public void GoDevice() {
+	public void GoDevice()
+	{
+		SetTabAlpha(deviceTab, 1f);
+		SetTabAlpha(fileTab, 0.5f);
+
 		devicePage.SetActive(true);
 		filePage.SetActive(false);
 	}
 
-	public void GoFile() {
+	public void GoFile()
+	{
+		SetTabAlpha(deviceTab, 0.5f);
+		SetTabAlpha(fileTab, 1f);
+
 		devicePage.SetActive(false);
 		filePage.SetActive(true);
+	}
+
+	private void SetTabAlpha(Button tab, float a)
+	{
+		ColorBlock cb = tab.colors;
+		cb.normalColor = new Color(1f, 1f, 1f, a);
+		tab.colors = cb;
 	}
 }

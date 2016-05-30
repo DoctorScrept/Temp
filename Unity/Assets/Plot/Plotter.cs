@@ -13,10 +13,11 @@ public class Plotter : MonoBehaviour
 		surface.slot = slots[slotId].gameObject;
 		surfaces[slotId] = surface;
 
-		slots[slotId].mesh.name = "SomeMesh";
 		MeshCollider mc = slots[slotId].gameObject.GetComponent<MeshCollider>();
 		mc.sharedMesh = slots[slotId].mesh;
 
+		Vector3 center = mc.bounds.center;
+		slots[slotId].gameObject.transform.position = new Vector3(-center.x, 0f , -center.z);
 	}
 
 	private Color GetColorByHeight(float height) {

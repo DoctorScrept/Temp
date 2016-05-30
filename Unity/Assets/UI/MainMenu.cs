@@ -7,10 +7,17 @@ public class MainMenu : Dialog
 
 	public SaveLoadDialog saveLoaDialog;
 	public MarkerControler markerControler;
+	public Button markerButton;
+	public Sprite hilightedMarkerButton;
+	private Sprite normalMarkerButton;
 	
 //	void Start () {}
 //	void Update () {}
-	
+	void Awake() {
+		Image targetBuutonImage = markerButton.gameObject.GetComponent<Image>();
+		normalMarkerButton = targetBuutonImage.sprite;
+	}
+
 	public void GoSave() {
 		saveLoaDialog.SetState(true);
 		controler.PushDialog(saveLoaDialog);
@@ -23,6 +30,12 @@ public class MainMenu : Dialog
 
 	public void ChangeTargetState() {
 		markerControler.IsEnable = !markerControler.IsEnable;
+		Image targetBuutonImage = markerButton.gameObject.GetComponent<Image>();
+		if (markerControler.IsEnable) {
+			targetBuutonImage.sprite = hilightedMarkerButton;
+		} else {
+			targetBuutonImage.sprite = normalMarkerButton;
+		}
 	}
 	
 	public void GoSettings() {

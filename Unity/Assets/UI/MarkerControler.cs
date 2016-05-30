@@ -9,7 +9,13 @@ public class MarkerControler : MonoBehaviour
 	public Text iText;
 	public Plotter plotter;
 	
-	//void Start () {}
+	void Awake() {
+		gameObject.SetActive(false);
+	}
+
+	void Start () {
+		marker.transform.position = plotter.transform.position;
+	}
 
 	void Update ()
 	{
@@ -27,7 +33,6 @@ public class MarkerControler : MonoBehaviour
 		{
 			marker.transform.position = hit.point;
 			SetText(hit.point, plotter.GetSurfaceBySlot(hit.collider.gameObject));
-			//Debug.Log(plotter.GetSurfaceBySlot(hit.collider.gameObject).GetMaxHeight());
 		}
 	}
 
