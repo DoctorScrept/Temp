@@ -76,4 +76,12 @@ public class TracerDevice : USBDevice
 		} 
 		return null;
 	}
+
+	public override string GetErrorText()
+	{
+		if (lastError == 3) {
+			return "Прилад не підключено";
+		}
+		return base.GetErrorText();
+	}
 }

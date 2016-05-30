@@ -69,7 +69,7 @@ public class USBDevice : MonoBehaviour {
 		return hLib != null;
 	}
 
-	public string GetErrorText()
+	public virtual string GetErrorText()
 	{
 		string result = null;
 		if (lastError != 0) {

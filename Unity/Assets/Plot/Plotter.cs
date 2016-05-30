@@ -2,6 +2,7 @@
 
 public class Plotter : MonoBehaviour
 {
+	public Transform centerTransform;
 	public MeshFilter[] slots;
 	private Surface[] surfaces = new Surface[1];
 
@@ -17,11 +18,11 @@ public class Plotter : MonoBehaviour
 		mc.sharedMesh = slots[slotId].mesh;
 
 		Vector3 center = mc.bounds.center;
-		slots[slotId].gameObject.transform.position = new Vector3(-center.x, 0f , -center.z);
+		centerTransform.position = new Vector3(center.x, 0f , center.z);
 	}
 
 	private Color GetColorByHeight(float height) {
-		return Color.Lerp(Color.blue, Color.red, height);
+		return Color.Lerp(Color.green, Color.red, height);
 	}
 	
 	public Mesh GenerateMesh(Surface surface)

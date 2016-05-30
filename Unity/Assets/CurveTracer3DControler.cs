@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+//«Файл бібліотеки CurveTracer3DDriver.dll не знайдено». 
+//	"файл не знайдено"
 public class CurveTracer3DControler : MonoBehaviour
 {
 	public TracerDevice device;
@@ -9,11 +11,11 @@ public class CurveTracer3DControler : MonoBehaviour
 	
 	public MainMenu mainMenu;
 	public ErrorDialog errorDialog;
-
+	public TPS_RPG_CamCon cam;
 
 	public Button startMeasureButton;
 	public Text completeText;
-
+	public MarkerControler markerControler;
 
 	private Stack<Dialog> dialogs = new Stack<Dialog>();
 
@@ -121,6 +123,8 @@ public class CurveTracer3DControler : MonoBehaviour
 
 		dialogs.Push(dialog);
 		dialog.gameObject.SetActive(true);
+
+		UpdateAbility();
 	}
 
 	public Dialog PopDialog()
@@ -132,7 +136,7 @@ public class CurveTracer3DControler : MonoBehaviour
 			Dialog prev = dialogs.Peek();
 			prev.SetIntarct(true);
 		}
-
+		UpdateAbility();
 		return dialog;
 	}
 
@@ -142,4 +146,10 @@ public class CurveTracer3DControler : MonoBehaviour
 		}
 	}
 
+	private void UpdateAbility()
+	{
+		bool isEnable = dialogs.Count < 2;
+		markerControler.IsActive = isEnable;
+		cam.IsActive = isEnable;
+	}
 }

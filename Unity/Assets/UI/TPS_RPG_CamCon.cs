@@ -21,6 +21,7 @@ public class TPS_RPG_CamCon : MonoBehaviour {
 	
 	void Start ()
 	{
+		IsActive = true;
 		Vector3 angles = transform.eulerAngles;
 	    x = angles.y;
 	    y = angles.x;
@@ -31,7 +32,7 @@ public class TPS_RPG_CamCon : MonoBehaviour {
 	{
 		if (target) //если есть обьект на который завязана камера
 		{
-			if(Input.GetMouseButton(1))//менять угол обзора только при зажатой клавише
+			if(Input.GetMouseButton(1) && IsActive)//менять угол обзора только при зажатой клавише
 			{//There's a target
 	 	       //Change the angles by the mouse movement
 		        x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
@@ -54,4 +55,6 @@ public class TPS_RPG_CamCon : MonoBehaviour {
 			transform.position = rotation * (new Vector3(0.0f, 0.0f, -distance)) + target.position;  
 		}
 	}
+
+	public bool IsActive { get; set; }
 }
