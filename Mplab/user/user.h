@@ -16,7 +16,7 @@ typedef union DATA_PACKET
 {
     byte _byte[USBGEN_EP_SIZE];  //For byte access
     word _word[USBGEN_EP_SIZE/2];//For word access(USBGEN_EP_SIZE msut be even)
-	float floats[USBGEN_EP_SIZE/8];
+    float floats[USBGEN_EP_SIZE/8];
     struct
     {
         enum

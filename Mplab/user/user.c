@@ -103,13 +103,12 @@ void ServiceRequests(void)
                  //mLED_1_Toggle();
             	 counter=0x1;
             	 break;
-			case TEST:           // defined in user.h
-            	 counter=16;//0x8; 
-				resultCounter += 0.1f;
-				dataPacket.floats[0] = test[1];
-				dataPacket.floats[1] = test[0];
-//[0] = resultCounter;
-				break;
+            case TEST:           // defined in user.h
+                counter=16;//0x8;
+                resultCounter += 0.1f;
+                dataPacket.floats[0] = test[1];
+                dataPacket.floats[1] = test[0];
+                break;
             default:
                  break;
         }
