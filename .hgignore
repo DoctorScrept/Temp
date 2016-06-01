@@ -52,3 +52,14 @@ Unity/*.userprefs
 # file to contain a full stack trace for all errors and log statements.
 # Without this file, you will not be able to see a stack trace for your errors.
 # UnityPlayer_Symbols.pdb
+
+
+# ==================================================================================
+# MPLAB
+# ==================================================================================
+Mplab\**.err
+Mplab\**.i
+Mplab\_output
+
+Mplab\*.cof
+Mplab\*.hex
