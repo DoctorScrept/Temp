@@ -2,7 +2,10 @@
 #include "system\typedefs.h"
 #include "system\usb\usb.h" 
 #include "io_cfg.h"         
-#include "user\user.h"   
+#include "user\user.h"
+
+#include "user\ds_pwm.h"
+
 //-----------------------------
 #pragma config CPUDIV = OSC1_PLL2,PLLDIV = 5,USBDIV = 2
 #pragma config FOSC = HSPLL_HS,FCMEN = OFF,IESO = OFF
@@ -16,7 +19,7 @@ void USBTasks(void);
 
 #define MotorPort  LATD
 
-void InitPWM(void);
+//void InitPWM(void);
 
 #define HIGH 1
 #define LOW 0
@@ -46,10 +49,6 @@ int count = 0;
 
 void main(void)
 {
-   
-//    INTCONbits.GIE = 1; //enable interrupts
-//RCONbits.IPEN = 1; // turn priority levels on
-//INTCON2bits.TMR0IP = 0; //set timer0 to low priority
 
     TRISA = 0x00;
     PORTA = 0x00;
@@ -60,7 +59,9 @@ void main(void)
     InitializeSystem();
     setup();
 
-     InitPWM();
+    // PWM
+    InitCCP1PWM(255, 0x03);
+    SetDutyCycleCCP1(512);
 
     while(1)
     {
@@ -89,32 +90,6 @@ void USBTasks(void)
         USBDriverService();                 // Interrupt or polling method
 
 }
-
-int pwm_reg = 212;
-char pwm_reg2;
-
-void InitPWM(void)
-{
-    TRISC = TRISC & 0b11111001;
-
-    CCP1CON=0b00001100; // ????????? ?????? ? ?????? ???
-    T2CON=0b01111110; // ????????? ???????
-    PR2=55; // ??????? ??????? ???
-    CCPR1L=0; // ??????? ???????? ???????????? = 0
-
-
-//    int pwm_reg;// = 255; // ???????? ??????? ??? ???????????? ????????????
-//    char pwm_reg2;// = 0;  // ?????????????? ??????? ??? ?????????
-//pwm_reg = 255;
-//
- pwm_reg2=pwm_reg<<6;    //
- pwm_reg2=pwm_reg2>>2;   //
- CCP1CON &= 0b11001111;  //
- CCP1CON |= pwm_reg2;    //
- CCPR1L=pwm_reg>>2;      //
-}
-
-
 
 
  void setup()
