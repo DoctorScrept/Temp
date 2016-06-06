@@ -19,6 +19,7 @@ void USBTasks(void);
 
 #define MotorPort  LATD
 
+void InitADC(void);
 //void InitPWM(void);
 
 #define HIGH 1
@@ -54,7 +55,7 @@ void main(void)
     PORTA = 0x00;
 
     TRISB = 0x00;
-    PORTB = 0x01;
+    PORTB = 0xFF;
 
     InitializeSystem();
     setup();
@@ -62,6 +63,8 @@ void main(void)
     // PWM
     InitCCP1PWM(255, 0x03);
     SetDutyCycleCCP1(512);
+
+    InitADC();
 
     while(1)
     {
@@ -89,6 +92,29 @@ void USBTasks(void)
     if(UCFGbits.UTEYE!=1)
         USBDriverService();                 // Interrupt or polling method
 
+}
+
+#define IS_ADC_INTERRUPT() PIR1bits.ADIF && PIE1bits.ADIE // ADC interrupt bits set and enable
+#define GET_ADC_8_BIT_RESULT() ADRESH;
+#define RESET_ADC_INTERRUPT() PIR1bits.ADIF = 0
+
+void StartADC()
+{
+    ADCON0bits.GO_DONE = 1; // Start adc
+    PIR1bits.ADIF = 0; // Reset ADC interrupt
+}
+
+void InitADC(void)
+{
+    ADCON0 = 0b00000001; // A/D enable and select AN0 (0x01 | 0bxx0000xx)
+    ADCON1 = 0b00001110; // Inranl voltage and only AN0 to didgital input (0bxx00xx | 0bxxxx1110)
+    ADCON2 = 0b00111110; // ACQT = 20TAD (33us/4.1us) and clock FOSC/64 (0bxx111xxx | 0bxxxxx110)
+
+    ADCON2bits.ADFM = 0; // Left justified. Good to use 8 high bits form ADRESH
+    PIE1bits.ADIE = 1; // Enable A/D interrupt
+    IPR1bits.ADIP = 1; // Set high priority for A/D interrupt
+
+    StartADC();
 }
 
 
@@ -145,17 +171,23 @@ T1CONbits.T1CKPS1 = 1;  // ....... ticks per second
      PIR1bits.TMR1IF = 0;
      count++;
      if (count > 10) {
-        PORTB = ~PORTB;
+        //PORTB = ~PORTB;
         count = 0;
      }
 }
 
   void HighInterrupt(void)
 {
+    if (IS_ADC_INTERRUPT())
+    {
+        RESET_ADC_INTERRUPT();
+        PORTB = GET_ADC_8_BIT_RESULT();
+        StartADC();
+    }
      INTCONbits.TMR0IF = LOW;
      count++;
      if (count > 10) {
-        PORTA = ~PORTA;
+        //PORTA = ~PORTA;
         count = 0;
      }
 }
