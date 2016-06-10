@@ -5,6 +5,44 @@ public class Plotter : MonoBehaviour
 	public Transform centerTransform;
 	public MeshFilter[] slots;
 	private Surface[] surfaces = new Surface[1];
+	
+	public GameObject gridConnectionPrefab;
+
+	public void BuildGridBySurface(Surface surface, Transform slot)
+	{
+		int sizeX = surface.GetLengthX();
+		int sizeY = surface.GetLengthY();
+
+		for (int x = 0; x < sizeX - 1; x++)
+		{
+			for (int y = 0; y < sizeY - 1; y++)
+			{
+				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x + 1, y)).transform.SetParent(slot);
+				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x, y + 1)).transform.SetParent(slot);
+			}
+		}
+
+	}
+
+	private GameObject CreateConnetion(Vector3 from, Vector3 to) {
+		GameObject connection = GameObject.Instantiate(gridConnectionPrefab);
+		SetConnetction(connection, from, to);
+		return connection;
+	}
+
+	private void SetConnetction(GameObject connection, Vector3 from, Vector3 to)
+	{
+		Vector3 center = (to + from) / 2;
+		Debug.Log(center);
+		connection.transform.position = center;
+		
+		connection.transform.LookAt(to);
+		Vector3 cur = connection.transform.rotation.eulerAngles;
+		connection.transform.rotation = Quaternion.Euler(cur.x + 90, cur.y, cur.z);
+
+		Vector3 scale = connection.transform.localScale;
+		connection.transform.localScale = new Vector3 (scale.x, 0.5f * Vector3.Distance(to, from), scale.z);
+	}
 
 	public void DrawToSlot(int slotId, Surface surface)
 	{
@@ -19,6 +57,8 @@ public class Plotter : MonoBehaviour
 
 		Vector3 center = mc.bounds.center;
 		centerTransform.position = new Vector3(center.x, 0f , center.z);
+
+		BuildGridBySurface(surface, slots[slotId].gameObject.transform);
 	}
 
 	private Color GetColorByHeight(float height) {

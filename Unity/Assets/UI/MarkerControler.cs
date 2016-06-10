@@ -13,6 +13,7 @@ public class MarkerControler : MonoBehaviour
 	
 	void Awake() {
 		gameObject.SetActive(false);
+		point = Vector3.zero;
 	}
 
 	void Start () {
@@ -35,6 +36,7 @@ public class MarkerControler : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit))
 		{
+			point = hit.point;
 			marker.transform.position = hit.point;
 			SetText(hit.point, plotter.GetSurfaceBySlot(hit.collider.gameObject));
 		}
@@ -53,4 +55,9 @@ public class MarkerControler : MonoBehaviour
 	}
 
 	public bool IsActive { get; set; }
+
+	Vector3 point;
+	public Vector3 GetPoint() {
+		return point;
+	}
 }
