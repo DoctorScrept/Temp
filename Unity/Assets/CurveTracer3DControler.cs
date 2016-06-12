@@ -42,6 +42,7 @@ public class CurveTracer3DControler : MonoBehaviour
 		{0f, 4.2f, 5.0f, 5.5f, 5.771429f, 6.042857f, 6.314286f, 6.585714f, 6.857143f, 7.128572f, 7.4f}
 	};
 
+	public GameObject axeText;
 
 	void Awake() {
 		Dialog.controler = this;
@@ -54,6 +55,8 @@ public class CurveTracer3DControler : MonoBehaviour
 		Debug.Log(defaultData2.Length);
 
 		plotter.DrawToSlot(0, s);
+
+		SetValues(s);
 	}
 
 
@@ -71,11 +74,45 @@ public class CurveTracer3DControler : MonoBehaviour
 			s.SetData(data);
 			plotter.DrawToSlot(0, s);
 
+//			SetValues(s);
+
 			startMeasureButton.gameObject.SetActive(true);
 			completeText.gameObject.SetActive(false);
 			completeText.text = "0%";
 			CloseAll();
 		}
+	}
+
+	private void SetValues(Surface s)
+	{
+		for(int i=0; i < 10; i++)
+		{
+			GameObject g = GameObject.Instantiate(axeText);
+			SetText(g, (i).ToString());
+			g.transform.position = new Vector3(0f, 0f, s.GetLengthY() / 10 * i);
+		}
+
+		for(int i=0; i < 10; i++)
+		{
+			GameObject g = GameObject.Instantiate(axeText);
+			SetText(g, (i * 50).ToString());
+			g.transform.position = new Vector3(s.GetLengthX() / 10 * i, 0f, 0f);
+			g.transform.rotation = Quaternion.Euler(Vector3.zero);
+		}
+
+		for(int i=0; i < 10; i++)
+		{
+			GameObject g = GameObject.Instantiate(axeText);
+			SetText(g, (i * 10).ToString());
+			g.transform.position = new Vector3(0f, s.GetMaxHeight() / 10 * i, 0f);
+				//(s.GetLengthX() / 10 * i, 0f, 0f);
+			g.transform.rotation = Quaternion.Euler(Vector3.zero);
+		}
+	}
+
+	private void SetText(GameObject g, string t)
+	{
+		g.GetComponent<TextMesh>().text = t;
 	}
 
 	public void StatMeasure()
