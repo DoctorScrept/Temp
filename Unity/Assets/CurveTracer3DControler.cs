@@ -74,7 +74,7 @@ public class CurveTracer3DControler : MonoBehaviour
 			s.SetData(data);
 			plotter.DrawToSlot(0, s);
 
-//			SetValues(s);
+			SetValues(s);
 
 			startMeasureButton.gameObject.SetActive(true);
 			completeText.gameObject.SetActive(false);
@@ -100,11 +100,12 @@ public class CurveTracer3DControler : MonoBehaviour
 			g.transform.rotation = Quaternion.Euler(Vector3.zero);
 		}
 
-		for(int i=0; i < 10; i++)
+		int values = 5;
+		for(int i=0; i < values; i++)
 		{
 			GameObject g = GameObject.Instantiate(axeText);
 			SetText(g, (i * 10).ToString());
-			g.transform.position = new Vector3(0f, s.GetMaxHeight() / 10 * i, 0f);
+			g.transform.position = new Vector3(0f, s.GetMaxHeight() / values * i, 0f);
 				//(s.GetLengthX() / 10 * i, 0f, 0f);
 			g.transform.rotation = Quaternion.Euler(Vector3.zero);
 		}
