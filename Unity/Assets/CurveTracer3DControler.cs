@@ -43,6 +43,7 @@ public class CurveTracer3DControler : MonoBehaviour
 	};
 
 	public GameObject axeText;
+	public GameObject division;
 
 	void Awake() {
 		Dialog.controler = this;
@@ -100,14 +101,15 @@ public class CurveTracer3DControler : MonoBehaviour
 			g.transform.rotation = Quaternion.Euler(Vector3.zero);
 		}
 
-		int values = 5;
-		for(int i=0; i < values; i++)
+		int values = 8;
+		for(int i=1; i < values; i++)
 		{
 			GameObject g = GameObject.Instantiate(axeText);
+			GameObject d = GameObject.Instantiate(division);
 			SetText(g, (i * 10).ToString());
-			g.transform.position = new Vector3(0f, s.GetMaxHeight() / values * i, 0f);
-				//(s.GetLengthX() / 10 * i, 0f, 0f);
-			g.transform.rotation = Quaternion.Euler(Vector3.zero);
+			g.transform.position = new Vector3(0f, s.GetMaxHeight() / 10 * i, 0.3f);
+			d.transform.position = new Vector3(0f, s.GetMaxHeight() / 10 * i, 0f);
+
 		}
 	}
 
