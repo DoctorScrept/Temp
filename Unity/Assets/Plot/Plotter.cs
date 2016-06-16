@@ -8,6 +8,8 @@ public class Plotter : MonoBehaviour
 	
 	public GameObject gridConnectionPrefab;
 
+	public Transform tempGrid;
+
 	public void BuildGridBySurface(Surface surface, Transform slot)
 	{
 		int sizeX = surface.GetLengthX();
@@ -17,8 +19,8 @@ public class Plotter : MonoBehaviour
 		{
 			for (int y = 0; y < sizeY - 1; y++)
 			{
-				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x + 1, y)).transform.SetParent(slot);
-				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x, y + 1)).transform.SetParent(slot);
+				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x + 1, y)).transform.SetParent(tempGrid);
+				CreateConnetion(surface.GetPoint(x, y), surface.GetPoint(x, y + 1)).transform.SetParent(tempGrid);
 			}
 		}
 
