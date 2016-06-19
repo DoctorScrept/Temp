@@ -10,6 +10,7 @@ public class MainMenu : Dialog
 	public Button markerButton;
 	public Sprite hilightedMarkerButton;
 	private Sprite normalMarkerButton;
+	public SettingsDialog settingsDialog;
 	
 //	void Start () {}
 //	void Update () {}
@@ -39,6 +40,7 @@ public class MainMenu : Dialog
 	}
 	
 	public void GoSettings() {
+		controler.PushDialog(settingsDialog);
 	}
 
 	public override void SetIntarct(bool value) {

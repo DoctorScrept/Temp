@@ -54,7 +54,6 @@ public class CurveTracer3DControler : MonoBehaviour
 	void Start () {
 		Surface s = new Surface(11, 11);
 		s.SetData(defaultData2);
-		Debug.Log(defaultData2.Length);
 
 		plotter.DrawToSlot(0, s);
 
