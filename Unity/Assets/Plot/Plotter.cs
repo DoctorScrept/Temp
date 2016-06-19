@@ -10,6 +10,30 @@ public class Plotter : MonoBehaviour
 
 	public Transform tempGrid;
 
+
+	private Vector3 V(float x, float y, float z)
+	{
+		return new Vector3(x, y, z);
+	}
+	private void Test()
+	{
+		CreateConnetion(V(0f, 0f, 0f), V(1f, 0f, 0f));
+		CreateConnetion(V(0f, 0f, 0f), V(0f, 1f, 0f));
+		CreateConnetion(V(0f, 0f, 0f), V(0f, 0f, 1f));
+		CreateConnetion(V(1f, 0f, 0f), V(1f, 1f, 0f));
+		CreateConnetion(V(1f, 0f, 0f), V(1f, 0f, 1f));
+		CreateConnetion(V(1f, 1f, 0f), V(1f, 1f, 1f));
+		CreateConnetion(V(1f, 0f, 1f), V(1f, 1f, 1f));
+		CreateConnetion(V(0f, 1f, 0f), V(1f, 1f, 0f));
+		CreateConnetion(V(0f, 1f, 0f), V(0f, 1f, 1f));
+		CreateConnetion(V(0f, 0f, 1f), V(1f, 0f, 1f));
+		CreateConnetion(V(0f, 0f, 1f), V(0f, 1f, 1f));
+		CreateConnetion(V(0f, 1f, 1f), V(1f, 1f, 1f));
+
+		CreateConnetion(V(0f, 0f, 0f), V(1f, 1f, 1f));
+	}
+
+
 	public void BuildGridBySurface(Surface surface, Transform slot)
 	{
 		int sizeX = surface.GetLengthX();
@@ -35,7 +59,6 @@ public class Plotter : MonoBehaviour
 	private void SetConnetction(GameObject connection, Vector3 from, Vector3 to)
 	{
 		Vector3 center = (to + from) / 2;
-		Debug.Log(center);
 		connection.transform.position = center;
 		
 		connection.transform.LookAt(to);
@@ -61,6 +84,7 @@ public class Plotter : MonoBehaviour
 		centerTransform.position = new Vector3(center.x, 0f , center.z);
 
 		BuildGridBySurface(surface, slots[slotId].gameObject.transform);
+		Test();
 	}
 
 	private Color GetColorByHeight(float height) {
