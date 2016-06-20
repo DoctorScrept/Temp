@@ -84,7 +84,7 @@ public class Plotter : MonoBehaviour
 		centerTransform.position = new Vector3(center.x, 0f , center.z);
 
 		BuildGridBySurface(surface, slots[slotId].gameObject.transform);
-		Test();
+		//Test();
 	}
 
 	private Color GetColorByHeight(float height) {
