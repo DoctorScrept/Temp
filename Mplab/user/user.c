@@ -89,7 +89,7 @@ void ServiceRequests(void)
         counter = 0;
         switch(dataPacket.CMD)
         {
-            case READ_VERSION:       // defined in user.h 
+            case DATA_PACKET.READ_VERSION:       // defined in user.h
                  //dataPacket._byte[0] is  READ_VERSION command
                  //dataPacket._byte[1] is len = 2 (MINOR_VERSION & MAJOR_VERSION)
                  dataPacket._byte[2] = MINOR_VERSION;  // defined in user.h
@@ -97,13 +97,13 @@ void ServiceRequests(void)
                  counter=0x04;
                  break;
             //---------------------------    
-            case MOTOR_ON:           // defined in user.h 
+            case DATA_PACKET.MOTOR_ON:           // defined in user.h
                  Direction = dataPacket._byte[2];   // 0= stop , 1 = turn left, 2 = turn right
                  //dataPacket._byte[0] is MOTOR_ON command
                  //mLED_1_Toggle();
             	 counter=0x1;
             	 break;
-            case TEST:           // defined in user.h
+            case DATA_PACKET.TEST:           // defined in user.h
                 counter=16;//0x8;
                 resultCounter += 0.1f;
                 dataPacket.floats[0] = test[1];

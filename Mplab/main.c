@@ -5,6 +5,7 @@
 #include "user\user.h"
 
 #include "user\ds_pwm.h"
+#include "user\ds_adc.h"
 
 //-----------------------------
 #pragma config CPUDIV = OSC1_PLL2,PLLDIV = 5,USBDIV = 2
