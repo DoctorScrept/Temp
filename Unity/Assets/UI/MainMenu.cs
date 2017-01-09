@@ -12,8 +12,6 @@ public class MainMenu : Dialog
 	private Sprite normalMarkerButton;
 	public SettingsDialog settingsDialog;
 	
-//	void Start () {}
-//	void Update () {}
 	void Awake() {
 		Image targetBuutonImage = markerButton.gameObject.GetComponent<Image>();
 		normalMarkerButton = targetBuutonImage.sprite;
